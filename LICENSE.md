@@ -1,1 +1,1 @@
-Copyright (c) 2015-2017 Michael Klement <mklement0@gmail.com> (http://same2u.net), released under the [MIT license](https://spdx.org/licenses/MIT#licenseText).
+Copyright (c) 2017 Alec Missine alec_missine@yahoo.com, released under the MIT license. Based off of [ttab](https://github.com/mklement0/ttab).
