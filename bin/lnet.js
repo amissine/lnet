@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
+const context = require("../conf/context.json"),
+  readline = require("readline"),
+  rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+
 var argv = process.argv.slice(2)
-  , context = require("../conf/context.json")
   , path = require("path")
 //  , Runner = require("../lib/tap-runner")
 
@@ -92,12 +95,16 @@ Please report bugs!  https://github.com/isaacs/node-tap/issues
   process.exit(0)
 }
 
-context.hubs.forEach(function (hub) {
-  console.log("Spawning remote port forwarding loop for hub='" + hub + "'")
+context.hubs.forEach( (hub) => {
+  console.log("Starting remote port forwarding loop for hub='" + hub + "'")
 })
-process.exit(0)
 
-///////////////////////////////////////////////////////////////////////////////
+rl.on("close", () => { process.exit(0) })
+rl.question("\nEnter command to execute or press Ctrl-D to exit: ", (command) => {
+  console.log(`Unknown command %s${command}%s ignored`, "\x1b[5m\x1b[31m", "\x1b[0m")
+})
+
+/*
 Object.keys(defaults).forEach(function (k) {
   if (!options.hasOwnProperty(k)) options[k] = defaults[k]
 })
@@ -148,3 +155,4 @@ if (options.tap || options.diag) {
 r.on("end", function () {
   process.exit(r.results.ok ? 0 : 1)
 })
+*/
