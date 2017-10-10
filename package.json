@@ -1,22 +1,22 @@
 {
-  "name": "ttab",
-  "description": "OSX CLI for opening a new terminal tab/window, optionally with a command to execute and/or display settings",
+  "name": "lnet",
+  "description": "Localized networking - a *n?x utility for getting SSH access to a box behind a router.",
   "private": false,
-  "version": "0.6.0",
+  "version": "0.0.1",
   "os": [
-    "darwin"
+    "darwin", "linux"
   ],
   "preferGlobal": true,
   "bin": {
-    "ttab": "bin/ttab"
+    "lnet": "bin/lnet.js"
   },
-  "homepage": "https://github.com/mklement0/ttab",
+  "homepage": "https://github.com/amissine/lnet",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mklement0/ttab.git"
+    "url": "https://github.com/amissine/lnet.git"
   },
   "bugs": {
-    "url": "https://github.com/mklement0/ttab/issues"
+    "url": "https://github.com/amissine/lnet/issues"
   },
   "scripts": {
     "test": "make test"
@@ -25,13 +25,13 @@
     "macos",
     "osx",
     "terminal",
-    "iterm",
-    "iterm2",
+    "linux",
+    "ssh",
     "cli",
-    "tabs",
-    "windows",
+    "router",
     "automate"
   ],
+
   "man": "./man/ttab.1",
   "directories": {
     "doc": "./doc"
