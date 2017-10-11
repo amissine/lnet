@@ -1,1 +1,1 @@
-Copyright (c) 2017 Alec Missine alec_missine@yahoo.com, released under the MIT license. Based off of [ttab](https://github.com/mklement0/ttab).
+Copyright (c) 2017 Alec Missine alec_missine@yahoo.com, released under the MIT license. Based off of Michael Klement's [ttab](https://github.com/mklement0/ttab).
