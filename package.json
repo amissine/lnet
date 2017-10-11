@@ -4,13 +4,13 @@
   "private": false,
   "version": "0.0.1",
   "os": [
-    "darwin",
-    "linux"
+    "darwin", "linux"
   ],
   "preferGlobal": true,
   "bin": {
-    "lnet": "bin/lnet.js"
+    "lnet": "bin/run.js"
   },
+  "main": "lib/lnet.js",
   "homepage": "https://github.com/amissine/lnet",
   "repository": {
     "type": "git",
@@ -18,9 +18,6 @@
   },
   "bugs": {
     "url": "https://github.com/amissine/lnet/issues"
-  },
-  "scripts": {
-    "test": "make test"
   },
   "keywords": [
     "macos",
@@ -32,11 +29,11 @@
     "router",
     "automate"
   ],
-  "man": "./man/ttab.1",
+  "man": "./man/lnet.1",
   "directories": {
     "doc": "./doc"
   },
-  "author": "Michael Klement <mklement0@gmail.com> (http://same2u.net)",
+  "author": "Alec Missine <alec_missine@yahoo.com> (http://minetats.com)",
   "license": "MIT",
   "net_same2u": {
     "make_pkg": {
@@ -52,5 +49,8 @@
     "replace": "^0.3.0",
     "semver": "^5.4.1",
     "tap": "^10.7.2"
+  },
+  "scripts": {
+    "test": "tap test/*.js"
   }
 }
