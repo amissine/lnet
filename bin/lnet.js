@@ -101,8 +101,8 @@ context.hubs.forEach( (hub) => {
 
 rl.on("close", () => { process.exit(0) })
 rl.question("\nEnter command to execute or press Ctrl-D to exit: ", (command) => {
-  console.log(`Unknown command %s${command}%s ignored`, "\x1b[5m\x1b[31m", "\x1b[0m")
-})
+  console.log(`Unknown command %s${command}%s ignored`, "\x1b[31m\x1b[5m", "\x1b[0m")
+})                                                    // FgRed   Blink      Reset
 
 /*
 Object.keys(defaults).forEach(function (k) {
