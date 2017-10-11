@@ -95,14 +95,17 @@ Please report bugs!  https://github.com/isaacs/node-tap/issues
   process.exit(0)
 }
 
+// Schedule SSH connection attempts for all hubs
 context.hubs.forEach( (hub) => {
-  console.log("Starting remote port forwarding loop for hub='" + hub + "'")
+  console.log("Starting remote port forwarding loop for hub '" + hub + "'")
 })
 
-rl.on("close", () => { process.exit(0) })
-rl.question("\nEnter command to execute or press Ctrl-D to exit: ", (command) => {
+// Read stdin until EOF (Ctrl-D) or Ctrl-C
+rl.on("close", () => { console.log("\nExiting\n"); process.exit(0) })
+function loop(prompt) { rl.question(prompt, (command) => {
   console.log(`Unknown command %s${command}%s ignored`, "\x1b[31m\x1b[5m", "\x1b[0m")
-})                                                    // FgRed   Blink      Reset
+  loop(prompt)})                                      // FgRed   Blink      Reset
+}; loop("\nEnter command to execute or press Ctrl-D to exit\n> ")
 
 /*
 Object.keys(defaults).forEach(function (k) {
