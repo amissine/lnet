@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const context = require("../conf/context.json") //color = require("../etc/color.json")
+const context = require("../conf/context.json")
 const LocalizedNetworking = require("../lib/lnet")
 
 /*
