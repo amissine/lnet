@@ -39,4 +39,4 @@ Please report bugs!  https://github.com/isaacs/node-tap/issues
 }
 */
 
-const ln = new LocalizedNetworking( { ctx: context } )
+const ln = new LocalizedNetworking( { ctx: context, rl_cb: null } )
