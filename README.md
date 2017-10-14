@@ -31,14 +31,14 @@ To enable it, just run `lnet` on all your _leaves_ and _hubs_:
 From your perspective, how many words is the following "picture" worth?
 
         1. Remote port forwarding
-         _______________________
+         ________________________
         /                        \
        |                          V
     +------+  2. Local access  +-----+
     | leaf |<------------------| hub |
     +------+                   +-----+
     
-    1. ssh -fR lp:localhost:llp hip hs
+    1. ssh -fR llp:localhost:lp hip hs
     2. ssh -p llp localhost
     
     hip: <hub-ip>
@@ -47,17 +47,11 @@ From your perspective, how many words is the following "picture" worth?
     lp : <leaf-port>
 
 
-A [macOS (OS X)](https://www.apple.com/osx/) CLI for programmatically opening a new terminal tab/window in the standard terminal application, `Terminal`, 
-or in popular alternative [`iTerm2`](http://www.iterm2.com/), optionally with a command to execute and/or a specific title and specific display settings.
-
-Note: `iTerm2` support is experimental in that it is currently not covered by the automated tests run before every release.
-
-
 # Installation
 
-**Important**: Irrespective of installation method, `Terminal` / `iTerm2` (`iTerm.app`) needs to be granted _access for assistive devices_ in order for `ttab` to function properly, which is a _one-time operation that requires administrative privileges_.  
-If you're not prompted on first run and get an error message instead, go to `System Preferences > Security & Privacy`, tab `Privacy`, select `Accessibility`, unlock, and make sure `Terminal.app` / `iTerm.app` is in the list on the right and has a checkmark.  
-For more information, see [Apple's support article on the subject](https://support.apple.com/en-us/HT202802)
+**Important**: This utility requires the `GatewayPorts yes` line in the `/etc/ssh/sshd_config` on the _hub_,
+and the `ExitOnForwardFailure yes` line in the `/etc/ssh/ssh_config` on the _leaf_.
+Do not forget to `sudo service ssh restart` after the `/etc/ssh/sshd_config` is changed!
 
 ## Installation from the npm registry
 
