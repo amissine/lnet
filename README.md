@@ -19,7 +19,33 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-# ttab &mdash; open a new Terminal.app / iTerm2.app tab or window
+# lnet &mdash; get SSH access to a box behind a router
+
+Let us call a box behind a router a _leaf_. A _leaf_ cannot accept external SSH connections.
+Another kind of a box - a _hub_ - can accept external connections. It can also have "local" SSH access to a _leaf_. 
+The `lnet` utility helps to configure and maintain the _leaf_ - _hub_ communications, so that all _leaves_ appear to be `localhost`s to a _hub_. Localized networking!
+To enable it, just run `lnet` on all your _leaves_ and _hubs_:
+
+    lnet
+
+From your perspective, how many words is the following "picture" worth?
+
+        1. Remote port forwarding
+         _______________________
+        /                        \
+       |                          V
+    +------+  2. Local access  +-----+
+    | leaf |<------------------| hub |
+    +------+                   +-----+
+    
+    1. ssh -fR lp:localhost:llp hip hs
+    2. ssh -p llp localhost
+    
+    hip: <hub-ip>
+    hs : <hub-script>
+    llp: <leaf-local-port>
+    lp : <leaf-port>
+
 
 A [macOS (OS X)](https://www.apple.com/osx/) CLI for programmatically opening a new terminal tab/window in the standard terminal application, `Terminal`, 
 or in popular alternative [`iTerm2`](http://www.iterm2.com/), optionally with a command to execute and/or a specific title and specific display settings.
