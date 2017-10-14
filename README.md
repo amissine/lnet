@@ -22,7 +22,7 @@
 # lnet &mdash; get SSH access to a box behind a router
 
 Let us call a box behind a router a _leaf_. A _leaf_ cannot accept external SSH connections.
-Another kind of a box - a _hub_ - can accept external connections. It can also have "local" SSH access to a _leaf_. 
+Another kind of box - a _hub_ - can accept external connections. It can also have "local" SSH access to a _leaf_. 
 The `lnet` utility helps to configure and maintain the _leaf_ - _hub_ communications, so that all _leaves_ appear to be `localhost`s to a _hub_. Localized networking!
 To enable it, just run `lnet` on all your _leaves_ and _hubs_:
 
@@ -44,8 +44,7 @@ From your perspective, how many words is the following "picture" worth?
     hip: <hub-ip>
     hs : <hub-script>
     llp: <leaf-local-port>
-    lp : <leaf-port>
-
+    lp : <leaf-port> - MUST be 22 for step 2 above to work
 
 # Installation
 
