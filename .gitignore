@@ -9,3 +9,6 @@ node_modules/
 
 # urchin log files
 .urchin.log
+
+# OS X
+.DS_Store
