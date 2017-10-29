@@ -28,7 +28,7 @@ To enable it, just run `lnet` on all your _leaves_ and _hubs_:
 
     lnet
 
-From your perspective, how many words is the following "picture" worth?
+How many words is the following "picture" worth?
 
         1. Remote port forwarding
          ________________________
