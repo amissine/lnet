@@ -38,7 +38,7 @@ How many words is the following "picture" worth?
     | leaf |<------------------| hub |
     +------+                   +-----+
     
-    1. ssh -fR llp:localhost:lp hip hs
+    1. ssh -R llp:localhost:lp hip hs
     2. ssh -p llp localhost
     
     hip: <hub-ip>
