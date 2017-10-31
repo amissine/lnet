@@ -33,7 +33,7 @@ eval "`printTestPlan`" | bin/run.js
 popd
 #----------------------------------
 : <<'EOF_TEST_PLAN'
-#echo "command2ignore"
+echo "command2ignore"
 sleep 60
 EOF_TEST_PLAN
 
