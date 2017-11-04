@@ -6,13 +6,13 @@ const hbMsg    = "heartbeat from " + hub
 const readline = require("readline")
 const rl       = readline.createInterface({ input: process.stdin, output: null})
 
-// Read the heartbeat from stdin
+// Read the heartbeat (or a command) from stdin
 var rl_cb = function( line ) {
-  return line.indexOf("heartbeat") == 0
+  return line.indexOf("heartbeat") == 0 || command(line)
 }
 
 // Write the heartbeat to stdout
-setInterval(() => { console.log(hbMsg) }, context.heartbeatRateMs)
+var hbLoop = setInterval(() => { console.log(hbMsg) }, context.heartbeatRateMs)
 console.log(hbMsg)
 
 // Read stdin until EOF (Ctrl-D) or Ctrl-C
@@ -35,4 +35,11 @@ function rl_stdin() {
       resolve(true); return                                                            // FgRed   Blink      Reset
     })
   })
+}
+
+// Execute a command
+function command( line ) {
+  console.log("Executing " + line)
+  clearInterval(hbLoop)
+  return true // return false if the command is unknown
 }

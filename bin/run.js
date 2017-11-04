@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const context = require("../conf/context.json")
+const context             = require("../conf/context.json")
 const LocalizedNetworking = require("../lib/lnet")
+const rl_cb               = require("../lib/rl_cb_test")
 
 /*
 if (options.version) {
@@ -39,4 +40,4 @@ Please report bugs!  https://github.com/isaacs/node-tap/issues
 }
 */
 
-const ln = new LocalizedNetworking( { ctx: context, rl_cb: null } )
+new LocalizedNetworking( { ctx: context, rl_cb: rl_cb } )
