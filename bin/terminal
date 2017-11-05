@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+command="$1 $2 $3 $4"
+[[ `uname` = "Darwin" ]] && ttab -d "$HOME" -w "$command; exit"
