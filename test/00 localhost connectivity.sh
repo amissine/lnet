@@ -29,6 +29,8 @@ pushd "$SAVED" >/dev/null
 echo "`pwd`"
 cp test/rc/00\ localhost\ connectivity.js conf/context.json
 eval "`printTestPlan`" | bin/run.js
+EXIT_CODE=$?
+[[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 
 popd
 #----------------------------------
