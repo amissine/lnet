@@ -21,12 +21,10 @@
 
 # lnet &mdash; get SSH access to a box behind a router
 
-One kind of a box behind a router is a _leaf_. A _leaf_ cannot accept external SSH connections.
-Another kind of box - a _hub_ - can accept external connections. It can also have "local" SSH access to a _leaf_. 
-The `lnet` utility helps to configure and maintain the _leaf_ - _hub_ communications, so that all _leaves_ appear to be `localhost`s to a _hub_. Localized networking!
-To enable it, just run `lnet` on all your _leaves_ and _hubs_:
-
-    lnet
+A box behind a router can be a _leaf_ and/or a _hub_. A _leaf_ does not accept external SSH connections, but can connect to one or more _hub_s.
+A _hub_ can accept external connections from one or more _leaves_. It can also have "local" SSH access to any _leaf_. 
+The `lnet` utility helps to configure and maintain the _leaf_ - _hub_ communications, so that all _leaves_ appear to be `localhost`s to a _hub_. 
+Localized networking! To enable it, install the utility on all your boxes and run it on all your _leaves_.
 
 How many words is the following "picture" worth?
 
@@ -55,7 +53,7 @@ and the `ExitOnForwardFailure yes` line in `/etc/ssh/ssh_config` on the _leaf_.
 Do not forget to `sudo service ssh restart` after `/etc/ssh/sshd_config` is changed!
 * This utility uses `node` from [Node.js](http://nodejs.org/) to run, and expects to find it in `/usr/local/bin` - please provide a symbolic link!
 
-
+## Installation from [gitnub.com](https://github.com/amissine/lnet)
 
 ## Installation from the npm registry
 
