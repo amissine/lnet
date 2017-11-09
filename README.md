@@ -44,6 +44,9 @@ How many words is the following "picture" worth?
     llp: <leaf-local-port>
     lp : <leaf-port> - MUST be 22 for step 2 above to work
 
+It shows the basic functionality this utility supports: after a _leaf_ has established an SSH connection with a _hub_, the _hub_ can establish
+another SSH connection with the _leaf_.
+
 # Installation
 
 **Important**:
@@ -54,6 +57,13 @@ Do not forget to `sudo service ssh restart` after `/etc/ssh/sshd_config` is chan
 * This utility uses `node` from [Node.js](http://nodejs.org/) to run, and expects to find it in `/usr/local/bin` - please provide a symbolic link!
 
 ## Installation from [gitnub.com](https://github.com/amissine/lnet)
+
+To get the latest:
+
+    mkdir $HOME/project; cd $HOME/project
+    git clone https://github.com/amissine/lnet.git
+
+You can now `cd lnet; test/00\ localhost\ connectivity.sh` (more on tests below).
 
 ## Installation from the npm registry
 

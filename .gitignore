@@ -1,5 +1,6 @@
 # vim
 *.swp
+*~
 
 # npm's debug files, created when something goes wrong.
 npm-debug.log
