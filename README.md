@@ -21,7 +21,7 @@
 
 # lnet &mdash; get SSH access to a box behind a router
 
-A box behind a router can be a _leaf_ and/or a _hub_. A _leaf_ does not accept external SSH connections, but can connect to one or more _hub_s.
+A box behind a router can be a _leaf_ and/or a _hub_. A _leaf_ does not accept external SSH connections, but can connect to one or more _hub_'s.
 A _hub_ can accept external connections from one or more _leaves_. It can also have "local" SSH access to any _leaf_. 
 The `lnet` utility helps to configure and maintain the _leaf_ - _hub_ communications, so that all _leaves_ appear to be `localhost`s to a _hub_. 
 Localized networking! To enable it, install the utility on all your boxes and run it on all your _leaves_.
@@ -44,6 +44,9 @@ How many words is the following "picture" worth?
     llp: <leaf-local-port>
     lp : <leaf-port> - MUST be 22 for step 2 above to work
 
+It shows the basic functionality this utility supports: after a _leaf_ has established an SSH connection with a _hub_, the _hub_ can establish
+another SSH connection with the _leaf_.
+
 # Installation
 
 **Important**:
@@ -53,7 +56,14 @@ and the `ExitOnForwardFailure yes` line in `/etc/ssh/ssh_config` on the _leaf_.
 Do not forget to `sudo service ssh restart` after `/etc/ssh/sshd_config` is changed!
 * This utility uses `node` from [Node.js](http://nodejs.org/) to run, and expects to find it in `/usr/local/bin` - please provide a symbolic link!
 
-## Installation from [gitnub.com](https://github.com/amissine/lnet)
+## Installation from [github.com](https://github.com/amissine/lnet)
+
+To get the latest:
+
+    mkdir $HOME/project; cd $HOME/project
+    git clone https://github.com/amissine/lnet.git
+
+You can now `cd lnet; test/00\ localhost\ connectivity.sh` (more on tests below).
 
 ## Installation from the npm registry
 

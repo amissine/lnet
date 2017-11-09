@@ -2,3 +2,5 @@
 
 command="$1 $2 $3 $4"
 [[ `uname` = "Darwin" ]] && ttab -d "$HOME" -w "$command; exit"
+[[ `uname` = "Linux" ]] && mate-terminal --window --hide-menubar \
+	--title="Port $3" --working-directory="$HOME" -e "$command"
