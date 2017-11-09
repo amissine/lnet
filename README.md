@@ -56,7 +56,7 @@ and the `ExitOnForwardFailure yes` line in `/etc/ssh/ssh_config` on the _leaf_.
 Do not forget to `sudo service ssh restart` after `/etc/ssh/sshd_config` is changed!
 * This utility uses `node` from [Node.js](http://nodejs.org/) to run, and expects to find it in `/usr/local/bin` - please provide a symbolic link!
 
-## Installation from [gitnub.com](https://github.com/amissine/lnet)
+## Installation from [github.com](https://github.com/amissine/lnet)
 
 To get the latest:
 
