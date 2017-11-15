@@ -1,0 +1,7 @@
+{
+  "boxes": [
+    { "HOSTNAME": "mba.local", "kind": "leaf"},
+    { "HOSTNAME": "alec-MS-7623", "kind": "hub", "ip": "73.244.212.210", "local_ip": "10.0.0.18"},
+    { "HOSTNAME": "alec-MS-7596", "local_ip": "10.0.0.6"}
+  ]
+}
