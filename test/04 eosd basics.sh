@@ -6,15 +6,28 @@ N=3 # number of eosd producers
 TEST_DATA_DIR=test/rc/04
 YYMMDD=$([[ `uname` == "Darwin" ]] && gdate +%y%m%d || date +%y%m%d)
 
+# Configure eosd data-dir on the local leaf
+mv_leaf_data() {
+  echo " "
+  echo "- mv_leaf_data: mv $leaf_data $HOSTNAME"
+  mv $leaf_data $HOSTNAME
+}
+
 # Configure eosd data-dir on the remote hub
 scp_hub_data() {
+  echo " "
+  echo "- scp_hub_data:"
+  echo "    mv $hub_data $hub_HOSTNAME"
   mv $hub_data $hub_HOSTNAME
+  echo "    scp -r $hub_HOSTNAME $hub_ip:project/lnet/$TEST_DATA_DIR"
   scp -r $hub_HOSTNAME $hub_ip:project/lnet/$TEST_DATA_DIR
 }
 
 # Find $1 in $hub_list
 in_hub_list() {
-  for nh in ${hub_list[@]}; do
+  local nh
+  for nonhub in "${hub_list[@]}"; do
+    nh=${nonhub}
     nonhub_HOSTNAME=${nh%% *}; nh=${nh#* }
     nonhub_ip=${nh%% *}; nh=${nh#* }
     nonhub_lp=${nh%% *}; nh=${nh#* } # using local port forwarding
@@ -26,23 +39,37 @@ in_hub_list() {
 
 # Configure eosd data-dir on the remote non-hub box
 scp_nonhub_data() {
+  echo " "
+  echo "- scp_nonhub_data:"
+  echo "    mv $nonhub_data $nonhub_HOSTNAME"
   mv $nonhub_data $nonhub_HOSTNAME
+  echo "    ssh -L $nonhub_lp:$nonhub_ip:22 $hub_ip sleep 15 &"
+  ssh -L $nonhub_lp:$nonhub_ip:22 $hub_ip sleep 15 &
+  ssh_pid=$!
+  local -i scp_result=1
+  while [ $scp_result -ne 0 ]; do
+    sleep 1
+    echo "    scp -r -P $nonhub_lp $nonhub_HOSTNAME localhost:project/lnet/$TEST_DATA_DIR"
+    scp -r -P $nonhub_lp $nonhub_HOSTNAME localhost:project/lnet/$TEST_DATA_DIR
+    scp_result=$?
+  done
+  kill $ssh_pid
 }
 
 # Configure eosd data-dirs, both localhost leaf and all the remote boxes
 configure_eosd_dirs() {
-  echo "Configuring $1 et al"
+  echo "- configuring $HOSTNAME et al"
   pushd $TEST_DATA_DIR
 
   [[ -d "tn_data_0" ]] || $HOME/product/eos/build/programs/launcher/launcher -p$N -o o.json
-  ./configure $1 > /tmp/$YYMMDD.context; EXIT_CODE=$?
+  ./configure $HOSTNAME > /tmp/$YYMMDD.context; EXIT_CODE=$?
   for tn_data in $(ls | grep tn_data); do
-    printf '\n- tn_data == %s\n\n' $tn_data # TODO remove this line
     cp $HOME/product/eos/build/genesis.json $tn_data
     . /tmp/$YYMMDD.context
-    [[ "$tn_data" == "$leaf_data" ]] && mv $tn_data $1       # leaf data-dir configured TODO: rename back
-    [[ "$tn_data" == "$hub_data" ]] && scp_hub_data          # hub data-dir configured      :   until all
-    in_hub_list "$tn_data"; [[ $? == 0 ]] && scp_nonhub_data # non-hub data-dir configured  :        done
+    if [ "$tn_data" == "$leaf_data" ]; then mv_leaf_data
+    elif [ "$tn_data" == "$hub_data" ]; then scp_hub_data
+    else in_hub_list "$tn_data"; [[ $? == 0 ]] && scp_nonhub_data
+    fi
   done
   popd; return $EXIT_CODE
  
@@ -58,7 +85,7 @@ pushd "$HOME/project/lnet"
 
 # If eosd data-dir does not exist, configure it
 EOSD_DATA_DIR="$TEST_DATA_DIR/$HOSTNAME"
-[[ -d "$EOSD_DATA_DIR" ]] || configure_eosd_dirs "$HOSTNAME" || work_in_progress
+[[ -d "$EOSD_DATA_DIR" ]] || configure_eosd_dirs || work_in_progress
 
 # Connect to the hub and run the test
 cp test/rc/04\ eosd\ basics.json conf/context.json
