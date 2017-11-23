@@ -1,6 +1,30 @@
 #!/usr/bin/env node
 
-const context = require("./config.json")
-const util    = require("util")
+const context  = require("./config.json")
+const util     = require("util")
+const HOSTNAME = process.argv[2]
 
-util.log("context=" + util.inspect(context))
+console.error("\n- context=" + util.inspect(context) + ", HOSTNAME=" + HOSTNAME)
+
+var hub_list = "hub_list=(", count = +0, lp = +1234
+context.boxes.forEach(box => {
+  if (box.kind == "leaf" && box.HOSTNAME == HOSTNAME) console.log("leaf_data=" + box.tn_data)
+  else if (box.kind == "hub") {
+    console.log("hub_HOSTNAME=" + box.HOSTNAME)
+    console.log("hub_ip=" + box.ip)
+    console.log("hub_data=" + box.tn_data)
+  } else {
+    ++lp
+    hub_list += ('"' + box.HOSTNAME + ' ' + box.local_ip + ' ' + lp + ' ' + box.tn_data + '" ')
+  }
+  if (++count == context.boxes.length) { // all boxes done
+    hub_list = hub_list.slice(0, -1) + ")"
+    console.log(hub_list)
+  }
+})
+
+if (context.updated) {
+  process.exit(0)
+} else { // work in progress
+  process.exit(111)
+}
