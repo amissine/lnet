@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 command="$1 $2 $3 $4"
-[[ `uname` = "Darwin" ]] && ttab -d "$HOME" -w "$command; exit"
-[[ `uname` = "Linux" ]] && mate-terminal --window --hide-menubar \
-	--title="Port $3" --working-directory="$HOME" -e "$command"
+echo "command == '$command'"
+if [ `uname` = "Darwin" ]; then ttab -d "$HOME" -w "$command; exit"
+elif [ `uname` = "Linux" ]; then gnome-terminal --hide-menubar --working-directory="$HOME" -e "$command"
+fi

@@ -3,14 +3,18 @@
 # See also: https://tiswww.case.edu/php/chet/bash/bashref.html
 
 N=3 # number of eosd producers
+TERMINAL="$HOME/project/lnet/bin/terminal"
 TEST_DATA_DIR=test/rc/04
 YYMMDD=$([[ `uname` == "Darwin" ]] && gdate +%y%m%d || date +%y%m%d)
 
-# Configure eosd data-dir on the local leaf
+EOSD_SH="project/lnet/$TEST_DATA_DIR/eosd.sh"
+
+# Configure eosd data-dir on the local leaf, then run eosd in a separate terminal window
 mv_leaf_data() {
   echo " "
   echo "- mv_leaf_data: mv $leaf_data $HOSTNAME"
   mv $leaf_data $HOSTNAME
+  $TERMINAL "$HOME/$EOSD_SH"
 }
 
 # Configure eosd data-dir on the remote hub
@@ -37,7 +41,8 @@ in_hub_list() {
   return 1
 }
 
-# Configure eosd data-dir on the remote non-hub box
+# Configure eosd data-dir on the remote non-hub box, then run eosd there
+# from a separate local terminal window
 scp_nonhub_data() {
   echo " "
   echo "- scp_nonhub_data:"
@@ -45,7 +50,7 @@ scp_nonhub_data() {
   mv $nonhub_data $nonhub_HOSTNAME
   echo "    ssh -L $nonhub_lp:$nonhub_ip:22 $hub_ip sleep 15 &"
   ssh -L $nonhub_lp:$nonhub_ip:22 $hub_ip sleep 15 &
-  ssh_pid=$!
+#  ssh_pid=$!
   local -i scp_result=1
   while [ $scp_result -ne 0 ]; do
     sleep 1
@@ -53,7 +58,8 @@ scp_nonhub_data() {
     scp -r -P $nonhub_lp $nonhub_HOSTNAME localhost:project/lnet/$TEST_DATA_DIR
     scp_result=$?
   done
-  kill $ssh_pid
+#  kill $ssh_pid
+  $TERMINAL "ssh -p $nonhub_lp localhost "'"'"~/$EOSD_SH"
 }
 
 # Configure eosd data-dirs, both localhost leaf and all the remote boxes
@@ -63,17 +69,15 @@ configure_eosd_dirs() {
 
   [[ -d "tn_data_0" ]] || $HOME/product/eos/build/programs/launcher/launcher -p$N -o o.json
   ./configure $HOSTNAME > /tmp/$YYMMDD.context; EXIT_CODE=$?
+  . /tmp/$YYMMDD.context
   for tn_data in $(ls | grep tn_data); do
     cp $HOME/product/eos/build/genesis.json $tn_data
-    . /tmp/$YYMMDD.context
     if [ "$tn_data" == "$leaf_data" ]; then mv_leaf_data
     elif [ "$tn_data" == "$hub_data" ]; then scp_hub_data
     else in_hub_list "$tn_data"; [[ $? == 0 ]] && scp_nonhub_data
     fi
   done
   popd; return $EXIT_CODE
- 
-#  rm genesis.json; rm o.json; rm *.dot; rm -rf tn_data_?
 }
 
 # Skip the rest of the test
@@ -92,8 +96,5 @@ cp test/rc/04\ eosd\ basics.json conf/context.json
 bin/run.js
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
-
-# Remove the eosd data-dir
-# rm -rf "$EOSD_DATA_DIR"
 
 popd
