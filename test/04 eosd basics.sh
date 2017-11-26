@@ -42,7 +42,7 @@ in_hub_list() {
 }
 
 # Configure eosd data-dir on the remote non-hub box, then run eosd there
-# from a separate local terminal window
+# in a separate local terminal window
 scp_nonhub_data() {
   echo " "
   echo "- scp_nonhub_data:"
@@ -59,7 +59,7 @@ scp_nonhub_data() {
     scp_result=$?
   done
 #  kill $ssh_pid
-  $TERMINAL "ssh -p $nonhub_lp localhost "'"'"~/$EOSD_SH"
+  $TERMINAL "ssh -p $nonhub_lp localhost "'"'"~/$EOSD_SH"'"'
 }
 
 # Configure eosd data-dirs, both localhost leaf and all the remote boxes
