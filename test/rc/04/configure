@@ -23,8 +23,8 @@ context.boxes.forEach(box => {
   }
 })
 
-if (context.updated) {
+if (context.ready) { // deploy the data-dirs and run the test
   process.exit(0)
-} else { // work in progress
+} else {             // work in progress
   process.exit(111)
 }

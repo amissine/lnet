@@ -1,5 +1,5 @@
 {
-  "updated": false,
+  "ready": true,
   "boxes": [
     { "tn_data": "tn_data_0", "HOSTNAME": "mba.local", "kind": "leaf"},
     { "tn_data": "tn_data_1", "HOSTNAME": "alec-MS-7623", "kind": "hub", "ip": "73.244.212.210", "local_ip": "10.0.0.18"},

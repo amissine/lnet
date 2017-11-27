@@ -85,6 +85,7 @@ work_in_progress() {
   echo "------ work in progress, EXIT_CODE == $?  ------"; popd; exit $EXIT_CODE
 }
 
+#----------------------------------
 pushd "$HOME/project/lnet"
 
 # If eosd data-dir does not exist, configure it
@@ -93,8 +94,9 @@ EOSD_DATA_DIR="$TEST_DATA_DIR/$HOSTNAME"
 
 # Connect to the hub and run the test
 cp test/rc/04\ eosd\ basics.json conf/context.json
-bin/run.js
+sleep 2; echo "test hub run eosd"; sleep 10 | bin/run.js
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 
 popd
+#----------------------------------

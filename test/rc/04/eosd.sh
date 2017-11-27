@@ -8,4 +8,4 @@ DATA_DIR=$TEST_DATA_DIR/$HOSTNAME
 GENESIS_JSON=$DATA_DIR/genesis.json
 
 cd $HOME/project/lnet
-$EOSD --data-dir $DATA_DIR --genesis-json $GENESIS_JSON
+$EOSD --data-dir $DATA_DIR --genesis-json $GENESIS_JSON > $TEST_DATA_DIR/eosd.out 2>&1

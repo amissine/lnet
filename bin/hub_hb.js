@@ -47,7 +47,13 @@ function rl_stdin() {
 
 // Execute a command
 function command( line ) {
-  console.log("Executing " + line)
-  clearInterval(hbLoop)
-  return true // return false if the command is unknown
+  console.log("Executing '" + line + "'")
+  if (line == "stop heartbeat") {
+    clearInterval(hbLoop)
+    return true
+  } else if (line == "run eosd") {
+    spawn("../test/rc/04/eosd.sh")
+    return true
+  }
+  return false
 }

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# TODO: complete for gnome-terminal
 command="$1 $2 $3 $4"
 echo "command == '$command'"
 if [ `uname` = "Darwin" ]; then ttab -d "$HOME" -w "$command; exit"
