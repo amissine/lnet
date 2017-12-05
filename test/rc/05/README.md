@@ -10,5 +10,5 @@ The account setup on a box is completed when the SSH public and private keys are
 
 The SSH configuration on each box will also have to be updated as described in the [README.md](https://github.com/amissine/lnet/blob/master/README.md) of my lnet project on github. This concludes the initialization phase on a box. Some of the initialization steps are better done manually.
 
-Let us further assume that the software we are about to configure comes in a tar-ball.
+Let us further assume that the software we are about to configure comes in a tarball. Each time our box restarts, it checks the timestamp of the tarball on a source computer. Then, if needed, it downloads the tarball and updates the local software.
 
