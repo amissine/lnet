@@ -1,4 +1,15 @@
 #!/bin/sh
+#
+# Steps to deploy the service to a target box:
+#
+# - on a source box:
+#     scp ./ctl <target>:~/
+#     scp -r ./opt/ctl <target>:~/opt
+#
+# - on a target box:
+#     sudo cp ~/ctl /etc/init.d
+#     sudo cp -a ~/opt/ctl /opt
+#     sudo chown --recursive root /opt/ctl
 
 # kFreeBSD do not accept scripts as interpreters, using #!/bin/sh and sourcing.
 if [ true != "$INIT_D_SCRIPT_SOURCED" ] ; then
