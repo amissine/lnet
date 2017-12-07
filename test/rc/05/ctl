@@ -8,8 +8,6 @@
 #
 # - on a target box:
 #     sudo cp ~/ctl /etc/init.d
-#     sudo cp -a ~/opt/ctl /opt
-#     sudo chown --recursive root /opt/ctl
 
 # kFreeBSD do not accept scripts as interpreters, using #!/bin/sh and sourcing.
 if [ true != "$INIT_D_SCRIPT_SOURCED" ] ; then
@@ -18,16 +16,16 @@ fi
 
 ### BEGIN INIT INFO
 # Provides:          ctl
-# Required-Start:    $remote_fs $syslog $network
-# Required-Stop:     $remote_fs $syslog
+# Required-Start:    $remote_fs $syslog $time$network
+# Required-Stop:     $remote_fs $syslog $time
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Initscript to spawn /opt/ctl/ctlService.sh
+# Short-Description: Initscript to spawn ctlService.sh as alec
 # Description:       Spawns a daemon to support Cloud Trust configuration process.
 #                    Based off of /etc/init.d/skeleton file.
 ### END INIT INFO
 
 # Author: Alec Missine <support@minetats.com>
 
-DESC="Configuration process support for distributed applications, (C) 2017 Cloud Trust, Ltd"
-DAEMON=/opt/ctl/ctlService.sh
+DESC="Configuration process support for distributed applications, (c) 2017 Cloud Trust, Ltd. All rights reserved."
+DAEMON=/home/alec/opt/ctl/ctlService.sh

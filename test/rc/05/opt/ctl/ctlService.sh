@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-echo "starting $0 $@" > /tmp/ctlService.log
+su -c 'echo "`set`" > /tmp/ctlService.log' - alec
