@@ -10,5 +10,5 @@ The account setup on a box is completed when the SSH public and private keys are
 
 The SSH configuration on each box will also have to be updated as described in this [README.md](https://github.com/amissine/lnet/blob/master/README.md). This concludes the initialization phase on a box. Some of the initialization steps are better done manually.
 
-Let us assume that the software we are about to configure comes in a tarball. Each time our box restarts, it checks the timestamp of the tarball on a source computer. Then, if needed, it downloads the tarball and updates the local software. This concludes the brief description of the Cloud Trust configuration process. The entry point to further details (where the devil resides) is [here](https://github.com/amissine/lnet/blob/master/test/rc/05/ctl).
+Let us assume that the software we are about to configure comes in a tarball. Each time our box restarts, it checks the timestamp of the tarball on a source computer. Then, if needed, it downloads the tarball and updates the local software. This concludes the brief description of the Cloud Trust configuration process. The entry point to further details (where the devil resides) is [here](https://github.com/amissine/lnet/blob/master/test/rc/05/distro/service/ctl).
 

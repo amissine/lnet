@@ -1,13 +1,18 @@
 #!/bin/sh
 #
-# Steps to deploy the service to a target box:
+# Steps to manually deploy the service to a target box for the first time:
 #
 # - on a source box:
-#     scp ./ctl <target>:~/
-#     scp -r ./opt/ctl <target>:~/opt
+#     cd ~/project/lnet/test/rc/05
+#     tar -czvf distro.tar.gz distro
+#     scp distro.tar.gz <target>:~/
 #
 # - on a target box:
-#     sudo cp ~/ctl /etc/init.d
+#     cd ~/
+#     rm -rf distro
+#     tar -xzvf distro.tar.gz
+#     mv distro.tar.gz latest-distro.tar.gz
+#     sudo cp ~/distro/service/ctl /etc/init.d
 
 # kFreeBSD do not accept scripts as interpreters, using #!/bin/sh and sourcing.
 if [ true != "$INIT_D_SCRIPT_SOURCED" ] ; then
@@ -27,5 +32,5 @@ fi
 
 # Author: Alec Missine <support@minetats.com>
 
-DESC="Configuration process support for distributed applications, (c) 2017 Cloud Trust, Ltd. All rights reserved."
-DAEMON=/home/alec/opt/ctl/ctlService.sh
+DESC="Configuration process support for distributed applications. Copyright (c) 2017 Cloud Trust, Ltd. All rights reserved."
+DAEMON=/home/alec/distro/ctl/ctlService.sh
