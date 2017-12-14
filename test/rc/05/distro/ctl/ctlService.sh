@@ -9,7 +9,7 @@ CTL_HOME=/home/alec
 declare logfile="/tmp/ctl.log"
 
 log() {
-  local timestamp=$([[ `uname` == "Darwin" ]] && gdate -Ins || date -Ins)
+  local f='-Ins' timestamp=$([[ `uname` == "Darwin" ]] && gdate $f || date $f)
   echo "$timestamp $1" >> $logfile
 }
 
@@ -18,7 +18,7 @@ checkDistro() {
 
   pushd $CTL_HOME
   if [ ! -s latest-distro.tar.gz ] || [ latest-distro.tar.gz -ot distro.tar.gz ]; then
-    log "Updating local $CTL_HOME/distro/"
+    log "Upgrading local $CTL_HOME/distro/"
     rm -rf distro
     tar -xzvf distro.tar.gz
     mv distro.tar.gz latest-distro.tar.gz
