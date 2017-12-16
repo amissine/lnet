@@ -5,12 +5,13 @@
 # - on a source box:
 #     cd ~/project/lnet/test/rc/05
 #     tar -czvf distro.tar.gz distro
-#     scp distro.tar.gz <target>:~/
-#
+#     scp distro.tar.gz <target>:~/ # and, when the target box is ready:
+#     ssh <target> echo "distro updated" >> /tmp/ctl
+
 # - on a target box:
 #     cd ~/
 #     tar -xzvf distro.tar.gz
-#     sudo distro/ctl/ctlService.sh and then echo "distro updated" >> /tmp/ctl from another terminal window
+#     sudo distro/ctl/ctlService.sh # and then echo "distro updated" >> /tmp/ctl from the source box
 
 # kFreeBSD do not accept scripts as interpreters, using #!/bin/sh and sourcing.
 if [ true != "$INIT_D_SCRIPT_SOURCED" ] ; then
