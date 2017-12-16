@@ -22,6 +22,21 @@ checkDistro() {
     rm -rf distro
     tar -xzvf distro.tar.gz
     mv distro.tar.gz latest-distro.tar.gz
+
+    # Check /etc/ssh/ssh_config
+    if [ ! -s /etc/ssh/ssh_config ] || [ /etc/ssh/ssh_config -ot distro/service/ssh_config ]; then
+      log "Updating /etc/ssh/ssh_config"
+      cp distro/service/ssh_config /etc/ssh
+    fi
+
+    # Check /etc/ssh/sshd_config
+    if [ ! -s /etc/ssh/sshd_config ] || [ /etc/ssh/sshd_config -ot distro/service/sshd_config ]; then
+      log "Updating /etc/ssh/sshd_config"
+      cp distro/service/sshd_config /etc/ssh
+      service ssh restart
+    fi
+
+    # Check /etc/init.d/ctl
     if [ ! -s /etc/init.d/ctl ] || [ /etc/init.d/ctl -ot distro/service/ctl ]; then
       log "Updating /etc/init.d/ctl - restart required"
       cp distro/service/ctl /etc/init.d
