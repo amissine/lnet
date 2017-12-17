@@ -4,7 +4,7 @@ Suppose you have a computer which you would like to use in a distributed applica
 
 Here, I am going to describe one way of doing it in a private cloud. Let us first install [Ubuntu 16.04 LTS](http://releases.ubuntu.com/16.04/) on all our boxes. One nice thing about it is it runs on both 64-bit and 32-bit computers. Can you imagine a distributed app running nicely on a 32-bit computer? Imagine.
 
-The next step is to choose an account name and to create this UNIX account on all our boxes. When you install Ubuntu, choose this account name to do it in one step.
+The next step is to choose an account name and to create this UNIX account on all our boxes. When you install Ubuntu, choose this account name to do it in one step. From this point on, let us assume the account name is `ctl`.
 
 The account setup on a box is completed when the SSH public and private keys are put into the chosen account’s `~/.ssh` directory and the `authorized_keys` file in that directory contains the public key. When this is done, there will be no need to type the password during the SSH login from one box to another. One way to do it is to manually configure a valid `~/.ssh` directory on one box and then to populate the contents of this directory to all our boxes, something like this:
 
@@ -16,3 +16,10 @@ The SSH configuration on each box will also have to be updated as described in t
 
 Let us assume that the software we are about to configure comes in a tarball. Each time our box restarts, it checks the timestamp of the tarball on a source computer. Then, if needed, it downloads the tarball and updates the local software. This concludes the brief description of the Cloud Trust configuration process. The entry point to further details (where the devil resides) is [here](https://github.com/amissine/lnet/blob/master/test/rc/05/distro/service/ctl).
 
+## Discussion
+
+One way to implement our configuration process is to run a service that gets notified when a new tarball is being copied to our box. And it is quite tempting to make the service itself configurable in the same manner. But configuring and restarting the service requires `sudo` access to the box. This means all the participants of the private cloud must trust each other with their boxes. Presently, any `ctl` user can easily disrupt the cloud severely. It is very propable then that any cloud supporting our configuration process will alvays remain very private. While it may be OK for the time being, this restriction must be stated explicitly and understood thoroughly:
+
+**All the participants of our private cloud must trust each other with their boxes.**
+
+Configuring a public cloud may require a totally different implementation.
