@@ -60,6 +60,7 @@ readPipe() {
   mkfifo $pipe
   chown alec $pipe
 
+  log "Reading input lines from $pipe"
   while true; do
     if read line < $pipe; then
       log "$line"

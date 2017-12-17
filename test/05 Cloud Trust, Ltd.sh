@@ -8,5 +8,4 @@
 # source box, and the source box is not part of the cloud. This script invokes the
 # '05 Cloud Trust, Ltd.js' file. In turn, the javascript file reads the cloud configuration
 # from '05 Cloud Trust, Ltd.json' and uses this JSON file to configure the shell script's
-# environment. The shell script performs the initial configuration of the cloud when the -i
-# option is provided. Otherwise, it updates the cloud.
+# environment.

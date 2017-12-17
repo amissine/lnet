@@ -6,7 +6,7 @@
 #     cd ~/project/lnet/test/rc/05
 #     tar -czvf distro.tar.gz distro
 #     scp distro.tar.gz <target>:~/ # and, when the target box is ready:
-#     ssh <target> echo "distro updated" >> /tmp/ctl
+#     ssh <target> echo "distro copied" >> /tmp/ctl
 
 # - on a target box:
 #     cd ~/
