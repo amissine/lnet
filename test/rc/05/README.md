@@ -18,7 +18,7 @@ Let us assume that the software we are about to configure comes in a tarball. Ea
 
 ## Discussion
 
-One way to implement our configuration process is to run a service that gets notified when a new tarball is being copied to our box. And it is quite tempting to make the service itself configurable in the same manner. But configuring and restarting the service requires `sudo` access to the box. This means all the participants of the private cloud must trust each other with their boxes. Presently, any `ctl` user can easily disrupt the cloud severely. It is very propable then that any cloud supporting our configuration process will alvays remain very private. While it may be OK for the time being, this restriction must be stated explicitly and understood thoroughly:
+One way to implement our configuration process is to run a service that gets notified when a new tarball is being copied to our box. And it is quite tempting to make the service itself configurable in the same manner. But configuring and restarting the service requires `sudo` access to the box. This means all the participants of the private cloud must trust each other with their boxes. Presently, any `ctl` user can easily disrupt the cloud severely. It is very probable then that any cloud supporting our configuration process will alvays remain very private. While it may be OK for the time being, this restriction must be stated explicitly and understood thoroughly:
 
 **All the participants of our private cloud must trust each other with their boxes.**
 
