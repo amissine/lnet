@@ -1,5 +1,6 @@
 #!/bin/sh
 #
+# TODO: update the comments below
 # Steps to manually deploy the service to a target box for the first time:
 #
 # - on a source box:
@@ -7,7 +8,7 @@
 #     tar -czvf distro.tar.gz distro
 #     scp distro.tar.gz <target>:~/ # and, when the target box is ready:
 #     ssh <target> echo "distro copied" >> /tmp/ctl
-
+#
 # - on a target box:
 #     cd ~/
 #     tar -xzvf distro.tar.gz

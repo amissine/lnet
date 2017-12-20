@@ -4,7 +4,8 @@
 # it checks if $CTL_HOME/distro.tar.gz should be used as the latest distro on the box. If yes, the old
 # distro is completely removed before extracting the new one from the tarball.
 #
-# It is being assumed here that whenever a new tarball gets created in the source box, the source box
+# TODO: update the comments below
+# It is being assumed here that whenever a new tarball gets created on the source box, the source box
 # copies it to the local target box and runs $CTL_HOME/distro/ctlNotify.sh here. It is the 
 # $CTL_HOME/distro/ctlNotify.sh script that writes a 'distro updated' line into the /tmp/ctl pipe.
 
