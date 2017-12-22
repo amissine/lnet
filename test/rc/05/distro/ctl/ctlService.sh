@@ -9,7 +9,7 @@
 # copies it to the local target box and runs $CTL_HOME/distro/ctlNotify.sh here. It is the 
 # $CTL_HOME/distro/ctlNotify.sh script that writes a 'distro updated' line into the /tmp/ctl pipe.
 
-#su -c 'echo "`set`" > /tmp/ctlService.log' - alec
+#su -c 'echo "`set`" > /tmp/ctlService.log' - alec # TODO: remove this comment
 
 unset CDPATH  # To prevent unexpected `cd` behavior.
 
@@ -23,35 +23,35 @@ log() {
 }
 
 checkDistro() {
-  [[ ! -s $CTL_HOME/distro.tar.gz ]] && return 1 # distro tarball not found
-
   pushd $CTL_HOME
+
+  # Check the latest tarball (see also: ./configureTargetBox.sh)
   if [ ! -s latest-distro.tar.gz ] || [ latest-distro.tar.gz -ot distro.tar.gz ]; then
-    log "Upgrading local $CTL_HOME/distro/"
-    rm -rf distro
+    rm -rf distro 2>/dev/null
     tar -xzvf distro.tar.gz
+    log "Local $CTL_HOME/distro/ updated"
     mv distro.tar.gz latest-distro.tar.gz
+  else log "No new tarball"; fi
 
-    # Check /etc/ssh/ssh_config
-    if [ ! -s /etc/ssh/ssh_config ] || [ /etc/ssh/ssh_config -ot distro/service/ssh_config ]; then
-      log "Updating /etc/ssh/ssh_config"
-      cp distro/service/ssh_config /etc/ssh
-    fi
-
-    # Check /etc/ssh/sshd_config
-    if [ ! -s /etc/ssh/sshd_config ] || [ /etc/ssh/sshd_config -ot distro/service/sshd_config ]; then
-      log "Updating /etc/ssh/sshd_config"
-      cp distro/service/sshd_config /etc/ssh
-      service ssh restart
-    fi
-
-    # Check /etc/init.d/ctl
-    if [ ! -s /etc/init.d/ctl ] || [ /etc/init.d/ctl -ot distro/service/ctl ]; then
-      log "Updating /etc/init.d/ctl - restart required"
-      cp distro/service/ctl /etc/init.d
-      update-rc.d ctl defaults
-    fi
+  # Check /etc/ssh/ssh_config
+  if [ ! -s /etc/ssh/ssh_config ] || [ /etc/ssh/ssh_config -ot distro/service/ssh_config ]; then
+    cp distro/service/ssh_config /etc/ssh
+    log "Updated /etc/ssh/ssh_config"
   fi
+
+  # Check /etc/ssh/sshd_config
+  if [ ! -s /etc/ssh/sshd_config ] || [ /etc/ssh/sshd_config -ot distro/service/sshd_config ]; then
+    cp distro/service/sshd_config /etc/ssh
+    log "Updated /etc/ssh/sshd_config - service ssh restart required"
+  fi
+
+  # Check /etc/init.d/ctl
+  if [ ! -s /etc/init.d/ctl ] || [ /etc/init.d/ctl -ot distro/service/ctl ]; then
+    cp distro/service/ctl /etc/init.d
+    update-rc.d ctl defaults
+    log "Updated /etc/init.d/ctl - box restart required"
+  fi
+
   popd
 }
 
