@@ -12,5 +12,6 @@ declare pipe="/tmp/ctl"
 pushd $CTL_HOME
 service ctl status; exit_code=$?
 [[ $exit_code != 0 ]] && { sudo distro/ctl/ctlService.sh; sleep 3; }
+# sleep 1
 echo "distro copied" >> $pipe
 popd
