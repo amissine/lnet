@@ -25,7 +25,7 @@ checkDistro() {
   pushd $CTL_HOME
 
   # Check the latest tarball (see also: ./configureTargetBox.sh)
-  if [ ! -s latest-distro.tar.gz ] || [ latest-distro.tar.gz -ot distro.tar.gz ]; then
+  if [ latest-distro.tar.gz -ot distro.tar.gz ]; then
     rm -rf distro 2>/dev/null
     tar -xzvf distro.tar.gz
     log "Local $CTL_HOME/distro/ updated"
@@ -65,6 +65,7 @@ readPipe() {
     if read line < $pipe; then
       log "$line"
       [[ ${line:0:6} == 'distro' ]] && { checkDistro; continue; }
+      [[ ${line:0:4} == 'exit' ]] && break
     else break; fi
   done
 }

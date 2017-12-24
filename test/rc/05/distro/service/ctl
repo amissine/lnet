@@ -21,3 +21,8 @@ fi
 CTL_HOME=/home/alec
 DESC="Configuration process support for distributed applications. Copyright (c) 2017 Cloud Trust, Ltd. All rights reserved."
 DAEMON=$CTL_HOME/distro/ctl/ctlService.sh
+
+do_stop_cleanup() {
+  local pipe="/tmp/ctl"
+  echo "exit" >> $pipe
+}
