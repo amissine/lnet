@@ -23,3 +23,5 @@ One way to implement our configuration process is to run a service that gets not
 **All the participants of our private cloud must trust each other with their boxes.**
 
 Configuring a public cloud may require a totally different implementation.
+
+Having said that, it is worth noting that, with proper user management, these security concerns can be mitigated, if not altogether eliminated. To join our cloud as a _leaf_, you can keep using your existing UNIX account. You install the `lnet` project, generate your key pair and make the public key available to the cloud. For example, you can create an issue on github that would contain the public key, requesting to join the cloud. Once your public key has been added to the `/home/ctl/.ssh/authorized_keys` on a _hub_, you can run `lnet` on your _leaf_ to connect to the `ctl` account on the _hub_. The `lnet` project comes from github already preconfigured to connect to the `ctl` UNIX account on that _hub_.
