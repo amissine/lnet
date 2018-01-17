@@ -2,29 +2,27 @@
 
 const context  = require("../conf/context.json")
 const hip      = process.argv[2]
-const llp      = process.argv[3]
-const hbMsg    = "heartbeat from " + hip
+var llp        = process.argv[3]
 const readline = require("readline")
 const rl       = readline.createInterface({ input: process.stdin, output: null})
 const { spawn }    = require("child_process")
-const util         = require("util")
 
 // Read the heartbeat (or a command) from stdin
 var rl_cb = function( line ) {
-  return line.indexOf("heartbeat") == 0 || command(line)
+  if (line.indexOf("heartbeat") == 0) {
+    llp = line.toString().split(' ')[3]
+    return true
+  }
+  return command(line)
 }
 
 // Write the heartbeat to stdout
-var hbLoop = setInterval(() => { console.log(hbMsg) }, context.heartbeatRateMs)
-console.log(hbMsg)
-
-// Make SSH connection to the leaf in a new terminal (optional)
-var terminal = null
-if (llp) terminal = spawn("./terminal", [ "ssh", "-p", llp, "localhost" ])
+var hbMsg = function() { return "heartbeat from " + hip + ", llp=" + llp + " pid=" + process.pid}
+var hbLoop = setInterval(() => { console.log(hbMsg()) }, context.heartbeatRateMs)
+console.log(hbMsg())
 
 // Read stdin until EOF (Ctrl-D) or Ctrl-C
 rl.on("close", () => {
-  llp && terminal.kill()
   console.log("\nExiting\n"); process.exit(0) 
 })
 const prompt  = "\n\x1b[32mEnter command to execute on the hub, or press Ctrl-D (or Ctrl-C) to exit\n>\x1b[0m"
