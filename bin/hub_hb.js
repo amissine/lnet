@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const context  = require("../conf/context.json")
+const cloud    = require("../conf/cloud.json")
 const hip      = process.argv[2]
 var llp        = process.argv[3]
 const readline = require("readline")
@@ -18,7 +18,7 @@ var rl_cb = function( line ) {
 
 // Write the heartbeat to stdout
 var hbMsg = function() { return "heartbeat from " + hip + ", llp=" + llp + " pid=" + process.pid}
-var hbLoop = setInterval(() => { console.log(hbMsg()) }, context.heartbeatRateMs)
+var hbLoop = setInterval(() => { console.log(hbMsg()) }, cloud.heartbeatRateMs)
 console.log(hbMsg())
 
 // Read stdin until EOF (Ctrl-D) or Ctrl-C

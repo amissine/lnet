@@ -12,8 +12,7 @@ printTestPlan() {
 #----------------------------------
 pushd "$HOME/project/lnet"
 
-cp test/rc/01\ localhost\ dynamic.json conf/context.json
-eval "`printTestPlan`" | bin/run.js
+eval "`printTestPlan`" | bin/run.js "../test/rc/01 localhost dynamic.json"
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 

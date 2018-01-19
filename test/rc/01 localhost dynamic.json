@@ -1,4 +1,3 @@
 {
-  "heartbeatRateMs": 20000,
   "hub": { "ip": "127.0.0.1", "llp": 0, "lp": 22 }
 }
