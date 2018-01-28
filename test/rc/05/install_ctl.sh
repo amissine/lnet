@@ -16,9 +16,18 @@ checkSudo() {
   if [ `cat /etc/sudoers | grep '$CTL_ADMIN ' | wc -l` > 0 ]; then
     log "Found $CTL_ADMIN in /etc/sudoers"; return
   fi
-  if [ `cat /etc/sudoers | grep '$CTL_ADMIN\t' | wc -l` > 0 ]; then
+  if [ `cat /etc/sudoers | grep $CTL_ADMIN$'\t' | wc -l` > 0 ]; then
     log "Found $CTL_ADMIN in /etc/sudoers"; return
   fi
+  if [ `cat /etc/sudoers.d/ctl_admins | grep $CTL_ADMIN$'\t' | wc -l` > 0 ]; then
+    log "Found $CTL_ADMIN in /etc/sudoers.d/ctl_admins"; return
+  fi
+  if [ `cat /etc/sudoers.d/ctl_admins | grep '$CTL_ADMIN ' | wc -l` > 0 ]; then
+    log "Found $CTL_ADMIN in /etc/sudoers.d/ctl_admins"; return
+  fi
+
+  log "Appending $CTL_ADMIN to /etc/sudoers.d/ctl_admins"
+  echo $CTL_ADMIN$'\t'"ALL = NOPASSWD: ALL" >> /etc/sudoers.d/ctl_admins
 }
 
 checkDistro() {
