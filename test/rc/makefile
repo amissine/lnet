@@ -34,7 +34,7 @@ install:
 	@curl --version || apt install curl
 	@node -v || { \
           curl -sL https://deb.nodesource.com/setup_8.x | bash -; \
-          apt install -y nodejs; }
+          apt install -y nodejs; }; apt autoremove
 	@[ -d project/lnet ] || { mkdir project; cd project;\
 		git clone https://github.com/amissine/lnet.git; cd ../;\
 		chown -R $(SUDO_USER) project; chgrp -R $(SUDO_USER) project; }
