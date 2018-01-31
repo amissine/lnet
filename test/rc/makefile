@@ -25,7 +25,7 @@ ifneq ($(PWD),$(HOME))
 endif
 $(if $(findstring /,$(MAKEFILE_LIST)),$(error Please only invoke this makefile from the directory it resides in))
 
-.PHONY: install
+.PHONY: install distro
 	
 install:
 	@if [ "`id -u`" != "0" ]; then echo "Please try 'sudo -E make'"; exit 1; fi
@@ -46,3 +46,5 @@ install:
 		echo " "; cat .ssh/id_rsa.pub; echo " ";\
 		echo '=== Please email it to support@minetats.com ===';\
 		echo 'id_rsa.pub printed' > .ssh/id_rsa.pub.printed; }
+
+distro:

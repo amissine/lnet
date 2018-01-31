@@ -12,17 +12,18 @@ fi
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Initscript to spawn ctlService.sh
-# Description:       Spawns a daemon to support Cloud Trust configuration process.
+# Description:       Spawns a daemon to support Cloud Trust Ltd distribution process.
 #                    Based off of /etc/init.d/skeleton file.
 ### END INIT INFO
 
 # Author: Alec Missine <support@minetats.com>
 
-CTL_HOME=/home/alec
-DESC="Configuration process support for distributed applications. Copyright (c) 2017 Cloud Trust, Ltd. All rights reserved."
+CTLNAME=@CTLNAME@
+CTL_HOME=/home/$CTLNAME
+DESC="Distribution process support for Cloud Trust Ltd"
 DAEMON=$CTL_HOME/distro/ctl/ctlService.sh
 
 do_stop_cleanup() {
-  local pipe="/tmp/ctl"
+  local pipe="/tmp/$CTLNAME"
   echo "exit" >> $pipe
 }

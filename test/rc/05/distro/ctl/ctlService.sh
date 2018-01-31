@@ -12,7 +12,8 @@
 
 unset CDPATH  # To prevent unexpected `cd` behavior.
 
-CTL_HOME=/home/alec
+CTLNAME=@CTLNAME@
+CTL_HOME=/home/$CTLNAME
 
 declare logfile="/tmp/ctl.log"
 
@@ -55,7 +56,7 @@ checkDistro() {
 }
 
 readPipe() {
-  local line pipe="/tmp/ctl"
+  local line pipe="/tmp/$CTLNAME"
   rm $pipe > /dev/null 2>&1
   mkfifo $pipe
   chown alec $pipe
