@@ -37,8 +37,9 @@ install:
           apt install -y nodejs; }; apt autoremove
 	@[ -d project/lnet ] || { mkdir project; cd project;\
 		git clone https://github.com/amissine/lnet.git; cd ../;\
-		chown -R $(SUDO_USER) project; chgrp -R $(SUDO_USER) project; }
-	@[ -f /etc/init.d/ctl ] || project/lnet/test/rc/05/install_ctl.sh $(SUDO_USER)
+		chown -R $(SUDO_USER) project; }
+	@[ -f /etc/init.d/$(SUDO_USER) ] || \
+		project/lnet/test/rc/05/install_ctl.sh $(SUDO_USER)
 	@[ -f .ssh/id_rsa.pub ] || \
 		su -c "ssh-keygen -b 4096 -t rsa -f .ssh/id_rsa" - $(SUDO_USER)
 	@[ -f .ssh/id_rsa.pub.printed ] || { echo " ";\
@@ -48,3 +49,4 @@ install:
 		echo 'id_rsa.pub printed' > .ssh/id_rsa.pub.printed; }
 
 distro:
+	@echo "goal distro started"

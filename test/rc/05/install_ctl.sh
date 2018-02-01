@@ -26,11 +26,11 @@
 # First, it would be nice to have two test scripts that add and delete a service
 # along with the ctl admin user associated with the service, see
 # 
-#    "../07 sudo svcadd ctl_admin1.sh"
+#    "../../07 sudo svcadd ctl_admin1.sh"
 #
 # and
 # 
-#    "../08 sudo svcdel ctl_admin1.sh"
+#    "../../08 sudo svcdel ctl_admin1.sh"
 #
 # for example.
 #
@@ -62,10 +62,15 @@ checkSudo() {
   if [ `cat /etc/sudoers.d/ctl_admins | grep '$CTL_ADMIN ' | wc -l` > 0 ]; then
     log "Found $CTL_ADMIN in /etc/sudoers.d/ctl_admins"; return
   fi
+  if [ `cat /etc/sudoers.d/$CTL_ADMIN | grep '$CTL_ADMIN ' | wc -l` > 0 ]; then
+    log "Found $CTL_ADMIN in /etc/sudoers.d/$CTL_ADMIN"; return
+  fi
 
   log "Appending $CTL_ADMIN to /etc/sudoers.d/ctl_admins"
   echo $CTL_ADMIN$'\t'"ALL = NOPASSWD: ALL" >> /etc/sudoers.d/ctl_admins
+}
 
+checkFiles() {
   pushd $CTL_HOME
 
   # Check /etc/ssh/ssh_config
@@ -81,20 +86,23 @@ checkSudo() {
   fi
 
   # Check all the distros
+log "Check all the distros"
   pushd /home
   for name in *; do
     su -c "cd /home/$name; make distro >> $logfile" - $name
   done
   popd
+return
 
-  # Check /etc/init.d/ctl
-  if [ ! -s /etc/init.d/ctl ] || [ /etc/init.d/ctl -ot distro/service/ctl ]; then
-    cp distro/service/ctl /etc/init.d
-    update-rc.d ctl defaults
-    log "Updated /etc/init.d/ctl - box restart required"
+  # Check /etc/init.d/$CTL_ADMIN
+  if [ ! -s /etc/init.d/$CTL_ADMIN ] || [ /etc/init.d/$CTL_ADMIN -ot distro/service/ctl ]; then
+    cp distro/service/ctl /etc/init.d/$CTL_ADMIN
+    update-rc.d $CTL_ADMIN defaults
+    log "Updated /etc/init.d/$CTL_ADMIN - box restart required"
   fi
 
   popd
 }
 
 checkSudo
+checkFiles
