@@ -42,7 +42,7 @@ unset CDPATH  # To prevent unexpected `cd` behavior.
 CTL_ADMIN=$1
 CTL_HOME=/home/$CTL_ADMIN
 
-declare logfile="/$CTL_HOME/install_ctl.log"
+declare logfile="$CTL_HOME/install_ctl.log"
 
 log() {
   local f='-Ins' timestamp=$([[ `uname` == "Darwin" ]] && gdate $f || date $f)
@@ -50,19 +50,19 @@ log() {
 }
 
 checkSudo() {
-  if [ `cat /etc/sudoers | grep '$CTL_ADMIN ' | wc -l` > 0 ]; then
+  if [[ `cat /etc/sudoers | grep '$CTL_ADMIN ' | wc -l` > 0 ]]; then
     log "Found $CTL_ADMIN in /etc/sudoers"; return
   fi
-  if [ `cat /etc/sudoers | grep $CTL_ADMIN$'\t' | wc -l` > 0 ]; then
+  if [[ `cat /etc/sudoers | grep $CTL_ADMIN$'\t' | wc -l` > 0 ]]; then
     log "Found $CTL_ADMIN in /etc/sudoers"; return
   fi
-  if [ `cat /etc/sudoers.d/ctl_admins | grep $CTL_ADMIN$'\t' | wc -l` > 0 ]; then
+  if [[ `cat /etc/sudoers.d/ctl_admins | grep $CTL_ADMIN$'\t' | wc -l` > 0 ]]; then
     log "Found $CTL_ADMIN in /etc/sudoers.d/ctl_admins"; return
   fi
-  if [ `cat /etc/sudoers.d/ctl_admins | grep '$CTL_ADMIN ' | wc -l` > 0 ]; then
+  if [[ `cat /etc/sudoers.d/ctl_admins | grep '$CTL_ADMIN ' | wc -l` > 0 ]]; then
     log "Found $CTL_ADMIN in /etc/sudoers.d/ctl_admins"; return
   fi
-  if [ `cat /etc/sudoers.d/$CTL_ADMIN | grep '$CTL_ADMIN ' | wc -l` > 0 ]; then
+  if [[ `cat /etc/sudoers.d/$CTL_ADMIN | grep '$CTL_ADMIN ' | wc -l` > 0 ]]; then
     log "Found $CTL_ADMIN in /etc/sudoers.d/$CTL_ADMIN"; return
   fi
 
@@ -89,7 +89,7 @@ checkFiles() {
 log "Check all the distros"
   pushd /home
   for name in *; do
-    su -c "cd /home/$name; make distro >> $logfile" - $name
+    su -c "cd /home/$name; make distro" - $name
   done
   popd
 return
