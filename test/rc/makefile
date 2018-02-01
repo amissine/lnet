@@ -49,4 +49,4 @@ install:
 		echo 'id_rsa.pub printed' > .ssh/id_rsa.pub.printed; }
 
 distro:
-	@echo "goal distro started for $(SUDO_USER)"
+	@echo "goal distro started for $(USER)"
