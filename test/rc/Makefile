@@ -55,7 +55,7 @@ check_git:
 	@echo $@ > $@
 
 distros:
-	@pushd ../; for NAME in *; do su -c "make distro" - $(NAME); done; popd
+	@cd ../; for NAME in *; do su -c "make distro" - $(NAME); done; cd $(SUDO_USER)
 	@echo $@ > $@
 
 distro: distro.tar.gz
