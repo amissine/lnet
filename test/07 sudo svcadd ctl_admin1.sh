@@ -22,8 +22,8 @@ sudoer_add() { # Add UNIX account for the sudoer $CTLNAME (NOPASSWD) to the box
   chmod 700 /home/$CTLNAME/.ssh
 }
 
-makefile_add2sudoer() { # Add makefile to /home/$CTLNAME
-  cp /home/$SUDO_USER/project/lnet/test/rc/makefile /home/$CTLNAME
+makefile_add2sudoer() { # Add Makefile to /home/$CTLNAME
+  cp /home/$SUDO_USER/project/lnet/test/rc/Makefile /home/$CTLNAME
 }
 
 set_CTLNAME

@@ -25,28 +25,44 @@ ifneq ($(PWD),$(HOME))
 endif
 $(if $(findstring /,$(MAKEFILE_LIST)),$(error Please only invoke this makefile from the directory it resides in))
 
-.PHONY: install distro
-	
-install:
-	@if [ "`id -u`" != "0" ]; then echo "Please try 'sudo -E make'"; exit 1; fi
-	@which sshd || apt install openssh-server
-	@git --version || apt install git
-	@curl --version || apt install curl
-	@node -v || { \
-          curl -sL https://deb.nodesource.com/setup_8.x | bash -; \
-          apt install -y nodejs; }; apt autoremove
-	@[ -d project/lnet ] || { mkdir project; cd project;\
-		git clone https://github.com/amissine/lnet.git; cd ../;\
-		chown -R $(SUDO_USER) project; }
-	@[ -f /etc/init.d/$(SUDO_USER) ] || \
-		project/lnet/test/rc/05/install_ctl.sh $(SUDO_USER)
+.PHONY: install
+
+install: check_if_root check_node check_git distros
+	@rm $^
 	@[ -f .ssh/id_rsa.pub ] || \
 		su -c "ssh-keygen -b 4096 -t rsa -f .ssh/id_rsa" - $(SUDO_USER)
 	@[ -f .ssh/id_rsa.pub.printed ] || { echo " ";\
-		echo '=== Here is your SSH public key: ==============';\
-		echo " "; cat .ssh/id_rsa.pub; echo " ";\
-		echo '=== Please email it to support@minetats.com ===';\
+		echo '=== Please email your .ssh/id_rsa.pub to support@minetats.com ===';\
 		echo 'id_rsa.pub printed' > .ssh/id_rsa.pub.printed; }
 
-distro:
-	@echo "goal distro started for $(USER)"
+check_if_root:
+	@if [ "`id -u`" != "0" ]; then echo " "; echo "=== Please try 'sudo -E make' ==="; echo " "; exit 1; fi
+	@which sshd || apt install openssh-server
+	@echo $@ > $@
+
+check_node:
+	@curl --version || apt install curl
+	@node -v || { \
+          curl -sL https://deb.nodesource.com/setup_8.x | bash -; \
+          apt install -y nodejs; }
+	@echo $@ > $@
+
+check_git:
+	@git --version || apt install git; apt autoremove
+	@[ -d project/lnet ] || { mkdir project; cd project;\
+		git clone https://github.com/amissine/lnet.git; cd ../;\
+		chown -R $(SUDO_USER) project; }
+	@echo $@ > $@
+
+distros:
+	@pushd ../; for NAME in *; do su -c "make distro" - $(NAME); done; popd
+	@echo $@ > $@
+
+distro: distro.tar.gz
+	@echo "- configuring distro for $(USER)"
+	@tar -xzvf distro.tar.gz
+	@sed -i "s/@CTLNAME@/$(USER)/" `find distro -type f 2>/dev/null | xargs grep -l '@CTLNAME@' | sed -z 's/\n/\ /g'`
+
+distro.tar.gz: project/lnet/test/rc/05/distro
+	@echo "- creating distro.tar.gz"
+	@cd $</..; tar -czvf distro.tar.gz distro; mv distro.tar.gz ~/
