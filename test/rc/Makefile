@@ -55,7 +55,7 @@ check_git:
 	@echo $@ > $@
 
 distros:
-	@cd ../; for NAME in *; do su -c "make distro" - $(NAME); done; cd $(SUDO_USER)
+	@cd ../; for NAME in *; do su -c "echo $$NAME; make distro" - $$NAME; done; cd $(SUDO_USER)
 	@echo $@ > $@
 
 distro: distro.tar.gz
@@ -64,5 +64,5 @@ distro: distro.tar.gz
 	@sed -i "s/@CTLNAME@/$(USER)/" `find distro -type f 2>/dev/null | xargs grep -l '@CTLNAME@' | sed -z 's/\n/\ /g'`
 
 distro.tar.gz: project/lnet/test/rc/05/distro
-	@echo "- creating distro.tar.gz"
+	@echo "- creating distro.tar.gz for $(USER)"
 	@cd $</..; tar -czvf distro.tar.gz distro; mv distro.tar.gz ~/
