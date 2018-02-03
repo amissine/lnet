@@ -27,13 +27,27 @@ $(if $(findstring /,$(MAKEFILE_LIST)),$(error Please only invoke this makefile f
 
 .PHONY: install
 
-install: check_if_root check_node check_git distros
+install: check_if_root check_node check_git distros box_distro
 	@rm $^
-	@[ -f .ssh/id_rsa.pub ] || \
-		su -c "ssh-keygen -b 4096 -t rsa -f .ssh/id_rsa" - $(SUDO_USER)
-	@[ -f .ssh/id_rsa.pub.printed ] || { echo " ";\
-		echo '=== Please email your .ssh/id_rsa.pub to support@minetats.com ===';\
-		echo 'id_rsa.pub printed' > .ssh/id_rsa.pub.printed; }
+
+box_distro: /etc/ssh/ssh_config /etc/ssh/sshd_config /etc/init.d/$(SUDO_USER) .ssh/id_rsa.pub
+	@echo $@ > $@
+
+/etc/ssh/ssh_config: distro/service/ssh_config
+	@cp distro/service/ssh_config /etc/ssh
+
+/etc/ssh/sshd_config: distro/service/sshd_config
+	@cp distro/service/sshd_config /etc/ssh
+	@service ssh stop; service ssh start; service ssh status
+
+/etc/init.d/$(SUDO_USER): distro/service/ctl
+	@cp distro/service/ctl /etc/init.d/$(SUDO_USER)
+	@update-rc.d $(SUDO_USER) defaults
+	@service $(SUDO_USER) start; service $(SUDO_USER) status
+
+.ssh/id_rsa.pub:
+	@su -c "ssh-keygen -b 4096 -t rsa -f .ssh/id_rsa" - $(SUDO_USER)
+	@echo " "; echo '=== Please email your .ssh/id_rsa.pub to support@minetats.com ==='
 
 check_if_root:
 	@if [ "`id -u`" != "0" ]; then echo " "; echo "=== Please try 'sudo -E make' ==="; echo " "; exit 1; fi
