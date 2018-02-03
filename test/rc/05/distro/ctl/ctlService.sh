@@ -59,7 +59,7 @@ readPipe() {
   local line pipe="/tmp/$CTLNAME"
   rm $pipe > /dev/null 2>&1
   mkfifo $pipe
-  chown alec $pipe
+  chown $CTLNAME $pipe
 
   log "Reading input lines from $pipe"
   while true; do
