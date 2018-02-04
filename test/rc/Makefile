@@ -73,10 +73,11 @@ distros:
 	@echo $@ > $@
 
 distro: distro.tar.gz
-	@echo "- configuring distro for $(USER)"
+	@echo "- configuring new distro for $(USER)"
+	@rm -rf distro 2>/dev/null
 	@tar -xzvf distro.tar.gz
 	@sed -i "s/@CTLNAME@/$(USER)/" `find distro -type f 2>/dev/null | xargs grep -l '@CTLNAME@' | sed -z 's/\n/\ /g'`
 
-distro.tar.gz: project/lnet/test/rc/05/distro
+distro.tar.gz: project/lnet/test/rc/05/distro/ctl project/lnet/test/rc/05/distro/service
 	@echo "- creating distro.tar.gz for $(USER)"
-	@cd $</..; tar -czvf distro.tar.gz distro; mv distro.tar.gz ~/
+	@cd $</../..; tar -czvf distro.tar.gz distro; mv distro.tar.gz ~/
