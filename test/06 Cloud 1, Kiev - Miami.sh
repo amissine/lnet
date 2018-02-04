@@ -12,7 +12,9 @@ printTestPlan() {
 #----------------------------------
 pushd "$HOME/project/lnet"
 
-eval "`printTestPlan`" | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json"
+# Ignore the testplan
+#eval "`printTestPlan`" | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json"
+cat - | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json"
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 
