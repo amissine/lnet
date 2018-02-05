@@ -14,10 +14,13 @@ pushd "$HOME/project/lnet"
 
 # Ignore the testplan
 #eval "`printTestPlan`" | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json"
-cat - | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json"
+pipe="/tmp/${USER}_mia-hub.in"
+rm $pipe 2>/dev/null
+mkfifo $pipe
+cat $pipe | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json" >> "/tmp/${USER}_mia-hub.out" 2>&1 &
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
-
+# alec@mba ~ $ echo "hub1 exit" >> /tmp/alec_mia-hub.in
 popd
 #----------------------------------
 : <<'EOF_TEST_PLAN'
