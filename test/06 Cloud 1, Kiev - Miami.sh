@@ -14,6 +14,9 @@ pushd "$HOME/project/lnet"
 
 # Ignore the testplan
 #eval "`printTestPlan`" | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json"
+#
+# IMPORTANT: the first time, we MUST connect to the hub manually - to add it to known_hosts
+#
 pipe="/tmp/${USER}_mia-hub.in"
 rm $pipe 2>/dev/null
 mkfifo $pipe
