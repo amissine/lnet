@@ -24,6 +24,7 @@ cat $pipe | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json" >> "/tmp/${USE
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 # alec@mba ~ $ echo "hub1 exit" >> /tmp/alec_mia-hub.in
+
 popd
 #----------------------------------
 : <<'EOF_TEST_PLAN'
