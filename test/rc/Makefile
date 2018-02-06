@@ -76,7 +76,7 @@ distro: distro.tar.gz
 	@echo "- configuring new distro for $(USER)"
 	@rm -rf distro 2>/dev/null
 	@tar -xzvf distro.tar.gz
-	@sed -i "s/@CTLNAME@/$(USER)/" `find distro -type f 2>/dev/null | xargs grep -l '@CTLNAME@' | sed -z 's/\n/\ /g'`
+	@cd distro; sed -i '' "s/@CTLNAME@/$$USER/" service/ctl ctl/ctlService.sh
 
 distro.tar.gz: project/lnet/test/rc/05/distro/ctl project/lnet/test/rc/05/distro/service
 	@echo "- creating distro.tar.gz for $(USER)"
