@@ -76,7 +76,7 @@ distro: distro.tar.gz
 	@echo "- configuring new distro for $(USER)"
 	@rm -rf distro 2>/dev/null
 	@tar -xzvf distro.tar.gz
-	@cd distro; bak=''; [ `uname` == "Darwin" ] && bak="''";\
+	@cd distro; bak=''; [ `uname` = "Darwin" ] && bak="''";\
 		sed -i $$bak "s/@CTLNAME@/$$USER/" service/ctl ctl/ctlService.sh
 
 distro.tar.gz: project/lnet/test/rc/05/distro/ctl project/lnet/test/rc/05/distro/service
