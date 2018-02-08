@@ -29,27 +29,45 @@ set_CTLSVC() { # Extract the service name from the script name
   CTLSVC="${RESULT%.*}"
 }
 
-sudoer_add() { # Add UNIX account for the sudoer $CTLSVC (NOPASSWD) to the box
-  if [ `uname` = "Darwin" ]; then sudoer_dscl; return $?; fi
+user_add() { # Add UNIX account for the sudoer $CTLSVC (NOPASSWD) to the box
+  echo -n "Adding user $1 group $2... "
+  if [ `uname` = "Darwin" ]; then user_mac $@; return $?; fi
 
-  useradd -d /home/$CTLSVC -s /bin/bash -g sudo $CTLSVC
-  mkdir -p /home/$CTLSVC/.ssh
-  chown -R $CTLSVC /home/$CTLSVC; chgrp -R sudo /home/$CTLSVC
-  echo "$CTLSVC ALL = NOPASSWD: ALL" > /etc/sudoers.d/$CTLSVC
-  chmod 700 /home/$CTLSVC/.ssh
+  local name=$1 group=$2
+  useradd -d /home/$name -s /bin/bash -g $group $name
+  chown -R $name /home/$name; chgrp -R $group /home/$name
+  [ "$group" = "sudo" ] && echo "$name ALL = NOPASSWD: ALL" > /etc/sudoers.d/$name
+  mkdir -p /home/$name/.ssh
+  chmod 700 /home/$name/.ssh
+#  cp /Users/$SUDO_USER/.ssh/id_rsa.pub /Users/$name/.ssh/authorized_keys
 }
 
-sudoer_dscl() {
-  echo -n "SUDO_USER=$SUDO_USER Using sudoer_dscl... "
-  return 2
+user_mac() {
+  local name=$1 group=$2 group2use="admin"
+  local -i users=$(dscl . -list /Users | wc -l)
+  echo -n "Starting user_dscl... "
+  [ $users -gt 256 ] && { echo " Too many users=$users"; return 10; }
+  dscl . -create /Users/$name
+  dscl . -create /Users/$name UserShell /bin/bash
+  local -i maxid=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1)
+  dscl . -create /Users/$name UniqueID $((maxid+1))
+  dscl . create /Users/$name PrimaryGroupID 20 # This is the "staff" group
+  dscl . create /Users/$name NFSHomeDirectory /Users/$name; sleep 5 # wait for the dscl to complete
+  chown -R $name:staff /Users/$name
+  [ "$group" != "sudo" ] && group2use=$group
+  dseditgroup -o edit -t user -a $name $group2use
+  mkdir -p /Users/$name/.ssh
+  chmod 700 /Users/$name/.ssh
+#  cp /Users/$SUDO_USER/.ssh/id_rsa.pub /Users/$name/.ssh/authorized_keys
 }
 
 makefile_add2sudoer() { # Add Makefile to /home/$CTLSVC
   cp /home/$SUDO_USER/project/lnet/test/rc/Makefile /home/$CTLSVC
 }
 
-set_CTLSVC; echo -n "Adding sudoer $CTLSVC... "
-sudoer_add && echo "Sudoer $CTLSVC added" || { ec=$?; echo "Exiting with exit code $ec"; exit $ec; }
+set_CTLSVC
+user_add $CTLSVC sudo && echo "Sudoer $CTLSVC added" \
+ || { ec=$?; echo "Exiting with exit code $ec"; exit $ec; }
 #makefile_add2sudoer
 
 #pushd /home/$CTLSVC
