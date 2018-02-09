@@ -14,8 +14,8 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-# === 09 sudo svcadd ctlsvc.sh ===
-# Add to the box the Cloud Trust Ltd service along with its sudoer ctlsvc
+# === 10 sudo svcdel ctlsvc.sh ===
+# Delete from the box the Cloud Trust Ltd service along with its sudoer ctlsvc
 
 unset CDPATH  # To prevent unexpected `cd` behavior.
 
@@ -27,12 +27,14 @@ declare CTLSVC # The name of the service and the sudoer the service is associate
 set_CTLSVC() { # Extract the service name from the script name
   local RESULT="${BASH_SOURCE##* }"
   CTLSVC="${RESULT%.*}"
+#  $1="${RESULT%.*}"
 }
 
-user_add() { # Add UNIX account for the sudoer $CTLSVC (NOPASSWD) to the box
-  echo -n "Adding user $1 group $2... "
-  if [ `uname` = "Darwin" ]; then user_add_mac $@; return $?; fi
+user_del() { # Delete UNIX account for the user $1 from the box
+  echo -n "Deleting user $1 group $2... "
+  if [ `uname` = "Darwin" ]; then user_del_mac $@; return $?; fi
 
+  return 1 # TODO: implement
   local name=$1 group=$2
   useradd -d /home/$name -s /bin/bash -g $group $name
   chown -R $name /home/$name; chgrp -R $group /home/$name
@@ -41,32 +43,24 @@ user_add() { # Add UNIX account for the sudoer $CTLSVC (NOPASSWD) to the box
   chmod 700 /home/$name/.ssh
 }
 
-user_add_mac() {
-# https://apple.stackexchange.com/questions/274954/cannot-create-a-user-account-on-mac-using-command-line
+user_del_mac() {
+  echo -n "Starting user_del_mac... "
   local name=$1 group=$2 group2use="admin"
-  local -i users=$(dscl . -list /Users | wc -l) user=$(dscl . -list /Users | grep $name | wc -l)
-  echo -n "Starting user_add_mac... "
-  [ $user -gt 0 ] && { echo " User $name found"; return 10; }
-  [ $users -gt 256 ] && { echo " Too many users=$users"; return 20; }
-  dscl . -create /Users/$name
-  dscl . -create /Users/$name UserShell /bin/bash
-  local -i maxid=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1)
-  dscl . -create /Users/$name UniqueID $((maxid+1))
-  dscl . create /Users/$name PrimaryGroupID 20 # This is the "staff" group
-  dscl . create /Users/$name NFSHomeDirectory /Users/$name
+  local user=$(dscl . -list /Users | grep $name | wc -l)
+  [ $user -eq 0 ] && { echo " User $name not found"; return 10; }
   [ "$group" != "sudo" ] && group2use=$group
-  dseditgroup -o edit -t user -a $name $group2use
-  mkdir -p /Users/$name/.ssh
-  chmod 700 /Users/$name/.ssh
-  chown -R $name:staff /Users/$name
+  dseditgroup -o edit -t user -d $name $group2use
+  rm -rf /Users/$name
+  dscl . rm /Users/$name
 }
 
-makefile_add2sudoer() { # Add Makefile to /home/$CTLSVC
+makefile_add2sudoer() {
   cp /home/$SUDO_USER/project/lnet/test/rc/Makefile /home/$CTLSVC
 }
 
+#declare -n ref=CTLSVC; set_CTLSVC $ref
 set_CTLSVC
-user_add $CTLSVC sudo && echo "Sudoer $CTLSVC added" \
+user_del $CTLSVC sudo && echo "Sudoer $CTLSVC deleted" \
  || { ec=$?; echo "=== Exiting with exit code $ec"; exit $ec; }
 #makefile_add2sudoer
 
