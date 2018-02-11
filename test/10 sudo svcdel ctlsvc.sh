@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/local/bin/bash
+# !/usr/bin/env bash
 #
 # Copyright 2017 Alec Missine (support@minetats.com) 
 #                and the Arbitrage Logistics International (ALI) project
@@ -22,12 +23,10 @@ unset CDPATH  # To prevent unexpected `cd` behavior.
 # Make sure the script is run by root
 if [ "`id -u`" != "0" ]; then echo "Please try sudo -E '$BASH_SOURCE'"; exit 1; fi
 
-declare CTLSVC # The name of the service and the sudoer the service is associated with
-
 set_CTLSVC() { # Extract the service name from the script name
+  local -n result=$1
   local RESULT="${BASH_SOURCE##* }"
-  CTLSVC="${RESULT%.*}"
-#  $1="${RESULT%.*}"
+  result="${RESULT%.*}"
 }
 
 user_del() { # Delete UNIX account for the user $1 from the box
@@ -59,7 +58,7 @@ makefile_add2sudoer() {
 }
 
 #declare -n ref=CTLSVC; set_CTLSVC $ref
-set_CTLSVC
+set_CTLSVC CTLSVC
 user_del $CTLSVC sudo && echo "Sudoer $CTLSVC deleted" \
  || { ec=$?; echo "=== Exiting with exit code $ec"; exit $ec; }
 #makefile_add2sudoer
