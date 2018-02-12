@@ -1,5 +1,6 @@
-#!/usr/bin/env bash
-#
+#!/usr/local/bin/bash
+# TODO: cd /usr/local/bin && sudo ln -s /bin/bash bash on Ubuntu
+
 # Copyright 2017 Alec Missine (support@minetats.com) 
 #                and the Arbitrage Logistics International (ALI) project
 #
@@ -22,11 +23,10 @@ unset CDPATH  # To prevent unexpected `cd` behavior.
 # Make sure the script is run by root
 if [ "`id -u`" != "0" ]; then echo "Please try sudo -E '$BASH_SOURCE'"; exit 1; fi
 
-declare CTLSVC # The name of the service and the sudoer the service is associated with
-
 set_CTLSVC() { # Extract the service name from the script name
+  local -n result=$1
   local RESULT="${BASH_SOURCE##* }"
-  CTLSVC="${RESULT%.*}"
+  result="${RESULT%.*}"
 }
 
 user_add() { # Add UNIX account for the sudoer $CTLSVC (NOPASSWD) to the box
@@ -34,11 +34,11 @@ user_add() { # Add UNIX account for the sudoer $CTLSVC (NOPASSWD) to the box
   if [ `uname` = "Darwin" ]; then user_add_mac $@; return $?; fi
 
   local name=$1 group=$2
+  mkdir -p /home/$name/.ssh
+  chmod 700 /home/$name/.ssh
   useradd -d /home/$name -s /bin/bash -g $group $name
   chown -R $name /home/$name; chgrp -R $group /home/$name
   [ "$group" = "sudo" ] && echo "$name ALL = NOPASSWD: ALL" > /etc/sudoers.d/$name
-  mkdir -p /home/$name/.ssh
-  chmod 700 /home/$name/.ssh
 }
 
 user_add_mac() {
@@ -65,7 +65,7 @@ makefile_add2sudoer() { # Add Makefile to /home/$CTLSVC
   cp /home/$SUDO_USER/project/lnet/test/rc/Makefile /home/$CTLSVC
 }
 
-set_CTLSVC
+set_CTLSVC CTLSVC
 user_add $CTLSVC sudo && echo "Sudoer $CTLSVC added" \
  || { ec=$?; echo "=== Exiting with exit code $ec"; exit $ec; }
 #makefile_add2sudoer

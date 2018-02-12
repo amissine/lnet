@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 # !/usr/bin/env bash
 #
 # Copyright 2017 Alec Missine (support@minetats.com) 
@@ -33,13 +33,9 @@ user_del() { # Delete UNIX account for the user $1 from the box
   echo -n "Deleting user $1 group $2... "
   if [ `uname` = "Darwin" ]; then user_del_mac $@; return $?; fi
 
-  return 1 # TODO: implement
   local name=$1 group=$2
-  useradd -d /home/$name -s /bin/bash -g $group $name
-  chown -R $name /home/$name; chgrp -R $group /home/$name
-  [ "$group" = "sudo" ] && echo "$name ALL = NOPASSWD: ALL" > /etc/sudoers.d/$name
-  mkdir -p /home/$name/.ssh
-  chmod 700 /home/$name/.ssh
+  userdel -r $name
+  [ "$group" = "sudo" ] && rm /etc/sudoers.d/$name
 }
 
 user_del_mac() {
