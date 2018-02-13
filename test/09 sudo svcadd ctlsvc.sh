@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 # TODO: cd /usr/local/bin && sudo ln -s /bin/bash bash on Ubuntu
-
+#
 # Copyright 2017 Alec Missine (support@minetats.com) 
 #                and the Arbitrage Logistics International (ALI) project
 #

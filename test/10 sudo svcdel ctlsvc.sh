@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 # !/usr/bin/env bash
 #
 # Copyright 2017 Alec Missine (support@minetats.com) 
