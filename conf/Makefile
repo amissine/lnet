@@ -29,10 +29,8 @@ SHELL := bash
 
 .PHONY: install
 
-install: check_deps lnet distros ctlsvc
-	@rm $^
-
-check_deps: check_if_root check_node check_git
+install: check_if_root check_node check_git lnet
+	@make -f project/lnet/conf/bootstrap
 	@rm $^
 
 check_if_root:
@@ -40,52 +38,26 @@ check_if_root:
 	@which sshd; if [ $$? != '0' ]; then \
 		[[ `uname` == 'Darwin' ]] && { echo "Please install openssh-server"; exit 1; } \
 		|| apt install openssh-server; fi
+	@if [ `uname` = 'Linux' ]; then [ -x /usr/local/bin/bash ] && \
+		{ mkdir -p /usr/local/bin 2>/dev/null; pushd /usr/local/bin; ln -s /bin/bash bash; popd; }; fi
 	@echo $@ > $@
-
-box_distro: /etc/ssh/ssh_config /etc/ssh/sshd_config /etc/init.d/$(SUDO_USER) .ssh/id_rsa.pub
-	@echo $@ > $@
-
-/etc/ssh/ssh_config: distro/service/ssh_config
-	@cp distro/service/ssh_config /etc/ssh
-
-/etc/ssh/sshd_config: distro/service/sshd_config
-	@cp distro/service/sshd_config /etc/ssh
-	@service ssh stop; service ssh start; service ssh status
-
-/etc/init.d/$(SUDO_USER): distro/service/ctl
-	@cp distro/service/ctl /etc/init.d/$(SUDO_USER)
-	@update-rc.d $(SUDO_USER) defaults
-	@service $(SUDO_USER) start; service $(SUDO_USER) status
-
-.ssh/id_rsa.pub:
-	@su -c "ssh-keygen -b 4096 -t rsa -f .ssh/id_rsa" - $(SUDO_USER)
-	@echo " "; echo '=== Please email your .ssh/id_rsa.pub to support@minetats.com ==='
 
 check_node:
-	@curl --version || apt install curl
-	@node -v || { \
-          curl -sL https://deb.nodesource.com/setup_8.x | bash -; \
-          apt install -y nodejs; }
+	@curl --version; if [ $$? != '0' ]; then [ `uname` = 'Linux' ] && apt install curl || \
+		{ echo "Please install curl"; exit 1; }; fi
+	@node -v || { [ `uname` = 'Darwin' ] && { echo "Please install nodejs"; exit 1; }; \
+		curl -sL https://deb.nodesource.com/setup_8.x | bash -; apt install -y nodejs; }
+	@if [ `uname` = 'Linux' ]; then apt autoremove; fi
 	@echo $@ > $@
 
 check_git:
-	@git --version || apt install git; apt autoremove
-	@[ -d project/lnet ] || { mkdir project; cd project;\
-		git clone https://github.com/amissine/lnet.git; cd ../;\
-		chown -R $(SUDO_USER) project; }
+	@git --version; if [ $$? != '0' ]; then [ `uname` = 'Linux' ] && apt install git || \
+		{ echo "Please install git"; exit 1; }; fi
+	@if [ `uname` = 'Linux' ]; then apt autoremove; fi
 	@echo $@ > $@
 
-distros:
-	@cd ../; for NAME in *; do su -c "echo $$NAME; make distro" - $$NAME; done; cd $(SUDO_USER)
+lnet:
+	@exe='git clone https://github.com/amissine/lnet.git'; \
+		[ -d project/lnet ] || { mkdir project 2>/dev/null; cd project; \
+		"$$exe"; cd ../; chown -R $(SUDO_USER) project; }
 	@echo $@ > $@
-
-distro: distro.tar.gz
-	@echo "- configuring new distro for $(USER)"
-	@rm -rf distro 2>/dev/null
-	@tar -xzvf distro.tar.gz
-	@cd distro; bak=''; [ `uname` = "Darwin" ] && bak="''";\
-		sed -i $$bak "s/@CTLNAME@/$$USER/" service/ctl ctl/ctlService.sh
-
-distro.tar.gz: project/lnet/test/rc/05/distro/ctl project/lnet/test/rc/05/distro/service
-	@echo "- creating distro.tar.gz for $(USER)"
-	@cd $</../..; tar -czvf distro.tar.gz distro; mv distro.tar.gz ~/
