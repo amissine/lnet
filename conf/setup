@@ -13,7 +13,7 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-# This makefile initializes your box to become part of Cloud Trust Ltd.
+# This makefile sets up your ctlsvc account, starts the service and configures SSH.
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
@@ -27,7 +27,25 @@ endif
 # Run all shell commands with bash.
 SHELL := bash
 
-.PHONY: install
+.PHONY: setup
 
-install:
-	@echo "SUDO_USER = $(SUDO_USER)"
+setup: ctlsvc ssh
+	@rm $^
+
+ctlsvc: ctlsvc_distro/ctlsvc.sh
+	@if [ `uname` = 'Linux' ]; then svc="ctlsvc_$(SUDO_USER)"; [ -x /etc/init.d/$$svc ] || { \
+		cp project/lnet/setup/ctlsvc /etc/init.d/$$svc; \
+	  cd /etc/init.d; sed -i "s/@CTLSVC_ACCOUNT@/$(SUDO_USER)/" $$svc; \
+		update-rc.d $$svc defaults; service $$svc start; }; service $$svc status; \
+	 else \
+	  ctlsvc_distro/ctlsvc.sh; \
+	 fi
+	@echo $@ > $@
+
+ctlsvc_distro/ctlsvc.sh: project/lnet/bin/ctlsvc.sh
+	@mkdir ctlsvc_distro 2>/dev/null; cp project/lnet/bin/ctlsvc.sh ctlsvc_distro
+	@cd ctlsvc_distro; bak=''; [ `uname` = "Darwin" ] && bak="''";\
+		sed -i $$bak "s/@CTLSVC_ACCOUNT@/$(SUDO_USER)/" ctlsvc.sh
+
+ssh:
+	@echo $@ > $@

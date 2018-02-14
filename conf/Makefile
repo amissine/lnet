@@ -24,13 +24,14 @@ ifneq ($(PWD),$(HOME))
   $(error Please try 'sudo -E make' from $(HOME) directory)
 endif
 $(if $(findstring /,$(MAKEFILE_LIST)),$(error Please only invoke this makefile from the directory it resides in))
+
 # Run all shell commands with bash.
 SHELL := bash
 
 .PHONY: install
 
 install: check_if_root check_node check_git lnet
-	@make -f project/lnet/conf/bootstrap
+	@make -f project/lnet/conf/setup
 	@rm $^
 
 check_if_root:
