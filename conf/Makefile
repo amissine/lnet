@@ -39,8 +39,8 @@ check_if_root:
 	@which sshd; if [ $$? != '0' ]; then \
 		[[ `uname` == 'Darwin' ]] && { echo "Please install openssh-server"; exit 1; } \
 		|| apt install openssh-server; fi
-	@if [ `uname` = 'Linux' ]; then [ -x /usr/local/bin/bash ] && \
-		{ mkdir -p /usr/local/bin 2>/dev/null; pushd /usr/local/bin; ln -s /bin/bash bash; popd; }; fi
+	@if [ `uname` = 'Linux' ]; then [ -x /usr/local/bin/bash ] || \
+		{ mkdir -p /usr/local/bin 2>/dev/null; cd /usr/local/bin; ln -s /bin/bash bash; }; fi
 	@echo $@ > $@
 
 check_node:
