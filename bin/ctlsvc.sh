@@ -53,6 +53,8 @@ readPipe() {
       [[ ${line:0:4} == 'exit' ]] && break
     else break; fi
   done
+  rm $pipe > /dev/null 2>&1
+  log "Stopping $CTLSVC_NAME"
 }
 
 readPipe &

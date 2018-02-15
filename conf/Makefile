@@ -37,7 +37,7 @@ install: check_if_root check_node check_git lnet
 check_if_root:
 	@if [ "`id -u`" != "0" ]; then echo " "; echo "=== Please try 'sudo -E make' ==="; echo " "; exit 1; fi
 	@which sshd; if [ $$? != '0' ]; then \
-		[[ `uname` == 'Darwin' ]] && { echo "Please install openssh-server"; exit 1; } \
+		[[ `uname` == 'Darwin' ]] && { echo "Please install SSH server"; exit 1; } \
 		|| apt install openssh-server; fi
 	@if [ `uname` = 'Linux' ]; then [ -x /usr/local/bin/bash ] || \
 		{ mkdir -p /usr/local/bin 2>/dev/null; cd /usr/local/bin; ln -s /bin/bash bash; }; fi
