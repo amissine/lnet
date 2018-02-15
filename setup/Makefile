@@ -14,6 +14,9 @@
 # specific language governing permissions and limitations under the License.
 #
 # This makefile sets up your ctlsvc account, starts the service and configures SSH.
+# It also configures the CTL accounts on your box: ctl, alik, and alit - if any of 
+# these already exists, it will first be deleted completely and all its data will
+# be lost.
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
@@ -38,14 +41,14 @@ ctlsvc: ctlsvc_distro/ctlsvc.sh
 	  cd /etc/init.d; sed -i "s/@CTLSVC_ACCOUNT@/$(SUDO_USER)/" $$svc; \
 		update-rc.d $$svc defaults; service $$svc start; }; service $$svc status; \
 	 else \
-	  count="`ps -ef | grep 'ctlsvc.sh' | wc -l`"; \
+	  rm $<.todelete 2>/dev/null; count="`ps -ef | grep 'ctlsvc.sh' | wc -l`"; \
 	  [ "$$count" = "       4" ] && echo "$< is running" || { $<; echo "Started $<"; }; \
 	 fi
 	@echo $@ > $@
 
 ctlsvc_distro/ctlsvc.sh: project/lnet/bin/ctlsvc.sh
-	@mkdir ctlsvc_distro 2>/dev/null; cp project/lnet/bin/ctlsvc.sh ctlsvc_distro
-	@cd ctlsvc_distro; bak=''; [ `uname` = "Darwin" ] && bak="''";\
+	@mkdir ctlsvc_distro 2>/dev/null; cp $< $@
+	@cd ctlsvc_distro; bak=''; [ `uname` = "Darwin" ] && bak=".todelete";\
 		sed -i $$bak "s/@CTLSVC_ACCOUNT@/$(SUDO_USER)/" ctlsvc.sh
 	@svc="ctlsvc_$(SUDO_USER)"; if [ `uname` = 'Linux' ]; then service $$svc stop; \
 	 else pipe="/tmp/$$svc"; [ -w $$pipe ] && echo "exit" >> $$pipe; fi
