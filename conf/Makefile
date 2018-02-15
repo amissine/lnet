@@ -31,7 +31,7 @@ SHELL := bash
 .PHONY: install
 
 install: check_if_root check_node check_git lnet
-	@make -f project/lnet/conf/setup
+	@make -f project/lnet/setup/Makefile
 	@rm $^
 
 check_if_root:
