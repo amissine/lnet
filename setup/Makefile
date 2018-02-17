@@ -48,7 +48,7 @@ ctlsvc: ctlsvc_distro/ctlsvc.sh # start the ctlsvc_$(SUDO_USER) service and/or i
 	 fi
 	@echo $@ > $@
 
-ctlsvc_distro/ctlsvc.sh: project/lnet/bin/ctlsvc.sh
+ctlsvc_distro/ctlsvc.sh: project/lnet/setup/ctlsvc.sh
 	@mkdir ctlsvc_distro 2>/dev/null; cp $< $@; chmod 744 $@
 	@cd ctlsvc_distro; bak=''; [ `uname` = "Darwin" ] && bak=".todelete";\
 		sed -i $$bak "s/@CTLSVC_ACCOUNT@/$(SUDO_USER)/" ctlsvc.sh
@@ -89,4 +89,5 @@ groups:
 	@echo $@ > $@
 
 accounts:
+	@for account in ctl alik alit; do project/lnet/setup/create_nosudoer.sh $$account; done
 	@echo $@ > $@
