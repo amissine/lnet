@@ -22,7 +22,7 @@
 #   https://www.gnu.org/software/bash/manual/bashref.html
 #   https://tiswww.case.edu/php/chet/bash/bashref.html
 
-unset CDPATH  # To prevent unexpected `cd` behavior.
+unset CDPATH  # To prevent unexpected 'cd' behavior.
 
 CTLSVC_ACCOUNT=@CTLSVC_ACCOUNT@
 CTLSVC_NAME="ctlsvc_$CTLSVC_ACCOUNT"

@@ -13,7 +13,7 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-# This makefile initializes your box to become part of Cloud Trust Ltd.
+# This makefile configures your box to become part of Cloud Trust Ltd.
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
