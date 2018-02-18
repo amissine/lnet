@@ -15,8 +15,8 @@
 #
 # This makefile sets up your ctlsvc account, starts the service and configures SSH.
 # It also configures all ALI accounts on your box: ctl, alik, and alit - if any of 
-# these already exists, it will first be deleted completely and all its data will
-# be lost. The alik and alit accounts belong to the ali group, and all three accounts
+# these already exists, nothing happens. The alik and alit accounts belong to 
+# the ali group, and all three accounts
 # (as well as your ctlsvc account) belong to the ctl group. If any of these two 
 # groups does not exist, this makefile creates the group.
 #
@@ -69,17 +69,8 @@ ctlsvc_distro/ctlsvc.sh: project/lnet/setup/ctlsvc.sh
 	 fi
 	@echo "Updated $@"
 
-pub_key: .ssh/id_rsa.pub
-	@echo " "; 
-	@echo '=== Please email your $(HOME)/.ssh/id_rsa.pub to support@minetats.com ==='
-	@echo " "; echo $@ > $@
-
-.ssh/id_rsa.pub:
-	@su -c "ssh-keygen -b 4096 -t rsa -f .ssh/id_rsa" - $(SUDO_USER)
-	@echo "Generated new key pair"
-
 groups:
-	@for group in 'ctl' 'ali'; do \
+	@for group in ctl ali; do \
 		if [ `uname` = 'Darwin' ]; then \
 		 [ -z "`dscl . list /Groups | grep $$group`" ] && { dscl . create /Groups/$$group; \
 		  echo "Group '$$group' created"; } || echo "Group '$$group' found"; \
@@ -89,5 +80,20 @@ groups:
 	@echo $@ > $@
 
 accounts:
-	@for account in ctl alik alit; do project/lnet/setup/create_nosudoer.sh $$account; done
+	@for account in ctl alik alit; do project/lnet/setup/add_nosudoer.sh $$account; done
+	@if [ `uname` = 'Darwin' ]; then [ -z "`su - $(SUDO_USER) -c groups | grep ctl`" ] && \
+		                                dseditgroup -o edit -t user -a $(SUDO_USER) ctl; \
+		[ -z "`su - ctl -c groups | grep ctl`" ] && dseditgroup -o edit -t user -a ctl ctl; \
+		[ -z "`su - alik -c groups | grep ctl`" ] && dseditgroup -o edit -t user -a alik ctl; \
+		[ -z "`su - alit -c groups | grep ctl`" ] && dseditgroup -o edit -t user -a alit ctl; \
+		[ -z "`su - alit -c groups | grep ali`" ] && dseditgroup -o edit -t user -a alit ali; \
+		[ -z "`su - alik -c groups | grep ali`" ] && dseditgroup -o edit -t user -a alik ali; fi
+	@if [ `uname` = 'Linux' ]; then \
+		echo "TODO: check accounts on a Linux box"; \
+	 fi
+	@for account in ctl alik alit; do \
+		su - $$account -c "ln -s $(HOME)/project/lnet/setup/$$account.mk Makefile; \
+		ln -s $(HOME)/project/lnet/setup/pub_key.mk pub_key.mk; make pub_key"; \
+	 done; su - $(SUDO_USER) -c "make -f project/lnet/setup/pub_key.mk pub_key"
 	@echo $@ > $@
+	
