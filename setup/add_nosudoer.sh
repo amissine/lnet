@@ -33,7 +33,7 @@ nosudoer_add() {
   if [ `uname` = "Darwin" ]; then nosudoer_add_mac $1; return $?; fi
 
   local name=$1
-  [ -d /home/$name ] && { echo " User $name found"; return 1; }
+  [ -d /home/$name ] && { echo " User $name found"; return; }
   mkdir -p /home/$name/.ssh
   chmod 700 /home/$name/.ssh
   useradd -d /home/$name -s /bin/bash $name

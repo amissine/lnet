@@ -39,9 +39,9 @@ setup: ctlsvc /etc/ssh/ssh_config /etc/ssh/sshd_config groups accounts
 
 ctlsvc: ctlsvc_distro/ctlsvc.sh # start the ctlsvc_$(SUDO_USER) service and/or its daemon $<
 	@if [ `uname` = 'Linux' ]; then svc="ctlsvc_$(SUDO_USER)"; [ -x /etc/init.d/$$svc ] || { \
-		cp project/lnet/setup/ctlsvc /etc/init.d/$$svc; \
+	  cp project/lnet/setup/ctlsvc /etc/init.d/$$svc; \
 	  cd /etc/init.d; sed -i "s/@CTLSVC_ACCOUNT@/$(SUDO_USER)/" $$svc; \
-		update-rc.d $$svc defaults; service $$svc start; }; service $$svc status; \
+	  update-rc.d $$svc defaults; }; service $$svc start; service $$svc status; \
 	 else \
 	  rm $<.todelete 2>/dev/null; count="`ps -ef | grep 'ctlsvc.sh' | wc -l`"; \
 	  [ "$$count" = "       4" ] && echo "$< is running" || { $<; echo "Started $<"; }; \
