@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations under the License.
 #
 # === ctlsvc.sh ===
-# Run ctlsvc daemon
+# Run ctlsvc daemon on either Ubuntu or macOS.
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
@@ -34,27 +34,26 @@ log() {
   echo "$timestamp $1" >> $logfile
 }
 
-makeDistro() {
-  su -c 'make distro' - $CTLSVC_ACCOUNT
-  service $CTLSVC_ACCOUNT stop; service $CTLSVC_ACCOUNT start; service $CTLSVC_ACCOUNT status
+check() {
+  su - $CTLSVC_ACCOUNT -c "sudo -E make -f project/lnet/setup/Makefile" >> $logfile 2>/dev/null &
 }
 
 readPipe() {
   local line pipe="/tmp/$CTLSVC_NAME"
   rm $pipe > /dev/null 2>&1
   mkfifo $pipe
-  chown $CTLSVC_ACCOUNT $pipe
+  [ `uname` = 'Darwin' ] && chgrp admin $pipe; chmod 660 $pipe
 
   log "Reading input lines from $pipe"
   while true; do
     if read line < $pipe; then
       log "$line"
-      [[ ${line:0:6} == 'distro' ]] && { makeDistro; continue; }
+      [[ ${line:0:5} == 'check' ]] && { check; continue; }
       [[ ${line:0:4} == 'exit' ]] && break
     else break; fi
   done
   rm $pipe > /dev/null 2>&1
-  log "Stopping $CTLSVC_NAME"
+  log "Exiting $0..."
 }
 
 readPipe &

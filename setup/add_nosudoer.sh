@@ -38,6 +38,7 @@ nosudoer_add() {
   chmod 700 /home/$name/.ssh
   useradd -d /home/$name -s /bin/bash $name
   chown -R $name /home/$name
+  echo "User $name added"
 }
 
 nosudoer_add_mac() {
@@ -45,8 +46,8 @@ nosudoer_add_mac() {
   local name=$1
   local -i users=$(dscl . -list /Users | wc -l) user=$(dscl . -list /Users | grep $name | wc -l)
   echo -n "Starting nosudoer_add_mac... "
-  [ $user -gt 0 ] && { echo " User $name found"; return 1; }
-  [ $users -gt 256 ] && { echo " Too many users=$users"; return 2; }
+  [ $user -gt 0 ] && { echo "User $name found"; return; }
+  [ $users -gt 256 ] && { echo " Too many users=$users"; return 1; }
   dscl . -create /Users/$name
   dscl . -create /Users/$name UserShell /bin/bash
   local -i maxid=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -ug | tail -1)
@@ -56,7 +57,7 @@ nosudoer_add_mac() {
   mkdir -p /Users/$name/.ssh
   chmod 700 /Users/$name/.ssh
   chown -R $name:staff /Users/$name
+  echo "User $name added"
 }
 
-nosudoer_add $1 && echo "Nosudoer $1 added" \
- || { ec=$?; echo "=== Exiting with exit code $ec"; exit $ec; }
+nosudoer_add $1; ec=$?; [ "$ec" != '0' ] && echo "=== Exiting with exit code $ec"; exit $ec

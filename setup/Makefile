@@ -43,18 +43,18 @@ ctlsvc: ctlsvc_distro/ctlsvc.sh # start the ctlsvc_$(SUDO_USER) service and/or i
 	  cd /etc/init.d; sed -i "s/@CTLSVC_ACCOUNT@/$(SUDO_USER)/" $$svc; \
 	  update-rc.d $$svc defaults; }; service $$svc start; service $$svc status; \
 	 else \
-	  rm $<.todelete 2>/dev/null; count="`ps -ef | grep 'ctlsvc.sh' | wc -l`"; \
+	  rm $<.todelete 2>/dev/null; count="`ps -ef | grep '/usr/local/bin/bash ctlsvc_distro/ctlsvc.sh' | wc -l`"; \
 	  [ "$$count" = "       4" ] && echo "$< is running" || { $<; echo "Started $<"; }; \
 	 fi
 	@echo $@ > $@
 
 ctlsvc_distro/ctlsvc.sh: project/lnet/setup/ctlsvc.sh
-	@mkdir ctlsvc_distro 2>/dev/null; cp $< $@; chmod 744 $@
-	@cd ctlsvc_distro; bak=''; [ `uname` = "Darwin" ] && bak=".todelete";\
-		sed -i $$bak "s/@CTLSVC_ACCOUNT@/$(SUDO_USER)/" ctlsvc.sh
 	@svc="ctlsvc_$(SUDO_USER)"; if [ `uname` = 'Linux' ]; then service $$svc stop; \
-	 else pipe="/tmp/$$svc"; [ -w $$pipe ] && echo "exit" >> $$pipe; fi
-	@echo "Updated $@ and stopped ctlsvc_$(SUDO_USER)"
+	 else pipe="/tmp/$$svc"; [ -w $$pipe ] && echo "exit" >> $$pipe; sleep 2; fi; \
+	 mkdir ctlsvc_distro 2>/dev/null; cp $< $@; chmod 744 $@; \
+	 cd ctlsvc_distro; bak=''; [ `uname` = "Darwin" ] && bak=".todelete";\
+	 sed -i $$bak "s/@CTLSVC_ACCOUNT@/$(SUDO_USER)/" ctlsvc.sh
+	@echo "Stopped ctlsvc_$(SUDO_USER) and updated $@"
 
 /etc/ssh/ssh_config: project/lnet/setup/ssh_config
 	@cp $< $@; echo "Updated $@ with $<"
@@ -81,19 +81,12 @@ groups:
 
 accounts:
 	@for account in ctl alik alit; do project/lnet/setup/add_nosudoer.sh $$account; done
-	@if [ `uname` = 'Darwin' ]; then [ -z "`su - $(SUDO_USER) -c groups | grep ctl`" ] && \
-		                                dseditgroup -o edit -t user -a $(SUDO_USER) ctl; \
-		[ -z "`su - ctl -c groups | grep ctl`" ] && dseditgroup -o edit -t user -a ctl ctl; \
-		[ -z "`su - alik -c groups | grep ctl`" ] && dseditgroup -o edit -t user -a alik ctl; \
-		[ -z "`su - alit -c groups | grep ctl`" ] && dseditgroup -o edit -t user -a alit ctl; \
-		[ -z "`su - alit -c groups | grep ali`" ] && dseditgroup -o edit -t user -a alit ali; \
-		[ -z "`su - alik -c groups | grep ali`" ] && dseditgroup -o edit -t user -a alik ali; fi
 	@if [ `uname` = 'Linux' ]; then \
 		echo "TODO: check accounts on a Linux box"; \
 	 fi
 	@for account in ctl alik alit; do \
-		su - $$account -c "ln -s $(HOME)/project/lnet/setup/$$account.mk Makefile; \
-		ln -s $(HOME)/project/lnet/setup/pub_key.mk pub_key.mk; make pub_key"; \
+		su - $$account -c "[ -s Makefile ] || ln -s $(HOME)/project/lnet/setup/$$account.mk Makefile; \
+		[ -s pub_key.mk ] || ln -s $(HOME)/project/lnet/setup/pub_key.mk pub_key.mk; make pub_key"; \
 	 done; su - $(SUDO_USER) -c "make -f project/lnet/setup/pub_key.mk pub_key"
 	@echo $@ > $@
 	
