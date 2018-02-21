@@ -54,11 +54,15 @@ function command( line ) {
     spawn("../test/rc/04/eosd.sh")
     return true
   } else if (line == 'git pull origin master') {
-    fs.writeFile('/tmp/ctlsvc_alec', line, (err) => {
-      if (err) throw err;
-      console.log('Execution started');
-    });
+    const fw = fs.openSync('/tmp/ctlsvc_alec', 'w')
+    fs.writeSync(fw, line)
+    console.log('Execution started');
     return true
   }
   return false
 }
+
+/*
+ ACKNOWLEDGMENTS
+  http://hassansin.github.io/fun-with-unix-named-pipes
+*/
