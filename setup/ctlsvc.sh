@@ -42,7 +42,7 @@ readPipe() {
   local line pipe="/tmp/$CTLSVC_NAME"
   rm $pipe > /dev/null 2>&1
   mkfifo $pipe
-  [ `uname` = 'Darwin' ] && chgrp admin $pipe; chmod 660 $pipe
+  chgrp ctl $pipe; [ `uname` = 'Darwin' ] && chgrp admin $pipe; chmod 660 $pipe
 
   log "Reading input lines from $pipe"
   while true; do
