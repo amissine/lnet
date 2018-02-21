@@ -41,7 +41,7 @@ check() {
 git() {
   local line="$1"
   log "git line = $line"
-#  su - $CTLSVC_ACCOUNT -c "sudo -E make -f project/lnet/setup/Makefile" >> $logfile 2>/dev/null &
+  su - $CTLSVC_ACCOUNT -c "cd ~/project/lnet; $line; sudo su - ctl -c 'echo check >> /tmp/ctlsvc_alec'" >> $logfile 2>/dev/null &
 }
 
 readPipe() {
