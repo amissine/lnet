@@ -4,9 +4,9 @@ const cloud    = require("../conf/cloud.json")
 const hip      = process.argv[2]
 var llp        = process.argv[3]
 const readline = require("readline")
-const fs       = require('fs');
+//const fs       = require('fs'); // TODO: remove this line or make it work
 const rl       = readline.createInterface({ input: process.stdin, output: null})
-const { spawn }    = require("child_process")
+const child_process = require("child_process")
 
 // Read the heartbeat (or a command) from stdin
 var rl_cb = function( line ) {
@@ -51,11 +51,14 @@ function command( line ) {
     clearInterval(hbLoop)
     return true
   } else if (line == "run eosd") {
-    spawn("../test/rc/04/eosd.sh")
+    child_process.spawn("../test/rc/04/eosd.sh")
     return true
   } else if (line == 'git pull origin master') {
+    /* This doesn't work as expected:
     const fw = fs.openSync('/tmp/ctlsvc_alec', 'w')
     fs.writeSync(fw, line)
+    */
+    child_process.exec('echo "' + line + '" >> /tmp/ctlsvc_alec')
     console.log('Execution started');
     return true
   }
