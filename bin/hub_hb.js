@@ -4,6 +4,7 @@ const cloud    = require("../conf/cloud.json")
 const hip      = process.argv[2]
 var llp        = process.argv[3]
 const readline = require("readline")
+const fs       = require('fs');
 const rl       = readline.createInterface({ input: process.stdin, output: null})
 const { spawn }    = require("child_process")
 
@@ -55,7 +56,7 @@ function command( line ) {
   } else if (line == 'git pull origin master') {
     fs.writeFile('/tmp/ctlsvc_alec', line, (err) => {
       if (err) throw err;
-      console.log('Executed');
+      console.log('Execution started');
     });
     return true
   }
