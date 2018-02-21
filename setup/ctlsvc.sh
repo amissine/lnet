@@ -38,6 +38,12 @@ check() {
   su - $CTLSVC_ACCOUNT -c "sudo -E make -f project/lnet/setup/Makefile" >> $logfile 2>/dev/null &
 }
 
+git() {
+  local line="$1"
+  log "git line = $line"
+#  su - $CTLSVC_ACCOUNT -c "sudo -E make -f project/lnet/setup/Makefile" >> $logfile 2>/dev/null &
+}
+
 readPipe() {
   local line pipe="/tmp/$CTLSVC_NAME"
   rm $pipe > /dev/null 2>&1
@@ -48,6 +54,7 @@ readPipe() {
   while true; do
     if read line < $pipe; then
       log "$line"
+      [[ ${line:0:3} == 'git' ]] && { git "$line"; continue; }
       [[ ${line:0:5} == 'check' ]] && { check; continue; }
       [[ ${line:0:4} == 'exit' ]] && break
     else break; fi
