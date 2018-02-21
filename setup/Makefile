@@ -85,8 +85,9 @@ accounts:
 		echo "TODO: check accounts on a Linux box"; \
 	 fi
 	@for account in ctl alik alit; do \
-		su - $$account -c "[ -s Makefile ] || ln -s $(HOME)/project/lnet/setup/$$account.mk Makefile; \
-		[ -s pub_key.mk ] || ln -s $(HOME)/project/lnet/setup/pub_key.mk pub_key.mk; make pub_key"; \
+	  su - $$account -c "[ -s Makefile ] || ln -s $(HOME)/project/lnet/setup/$$account.mk Makefile; \
+	  [ -d project ] || ln -s $(HOME)/project project; \
+	  [ -s pub_key.mk ] || ln -s $(HOME)/project/lnet/setup/pub_key.mk pub_key.mk; make pub_key"; \
 	 done; su - $(SUDO_USER) -c "make -f project/lnet/setup/pub_key.mk pub_key"
 	@echo $@ > $@
 	
