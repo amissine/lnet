@@ -9,7 +9,6 @@ const { spawn }    = require("child_process")
 
 // Read the heartbeat (or a command) from stdin
 var rl_cb = function( line ) {
-  console.log("rl_cb line='" + line + "'")
   if (line.indexOf("heartbeat") == 0) {
     llp = line.toString().split(' ')[3]
     return true
@@ -52,6 +51,12 @@ function command( line ) {
     return true
   } else if (line == "run eosd") {
     spawn("../test/rc/04/eosd.sh")
+    return true
+  } else if (line == 'git pull origin master') {
+    fs.writeFile('/tmp/ctlsvc_alec', line, (err) => {
+      if (err) throw err;
+      console.log('Executed');
+    });
     return true
   }
   return false
