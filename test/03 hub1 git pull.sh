@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations under the License.
 #
 # === 03 hub1 git pull.sh ===
-# Remotely execute 'git pull' on hub1
+# Remotely execute 'git pull' on hub1.
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
