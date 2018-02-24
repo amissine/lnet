@@ -48,7 +48,7 @@ printTestPlan() {
 
 simulateLeaf() {
   local name=$1
-  local -i llp=$((1025 + RANDOM % (65536 - 1025)))
+  local -i llp=$((1025 + RANDOM % (65536 - 1025))) # TODO: unique llp values
 
   echo "- pid $$ is simulating $name to hub data stream"
   
@@ -60,7 +60,7 @@ heartbeatFromLeaf() {
 
   sleep $((1 + RANDOM % 5)) # [1..5], 5 = 6 - 1
   while true; do            #         6 = 5 + 1
-    sleep 6; echo "heartbeat from port $llp"
+    sleep 6; # echo "heartbeat from port $llp" # on no heartbeat from a leaf the hub must exit
   done
 }
 
@@ -83,7 +83,7 @@ readPipe() {
     pids="$pid $pids"
   done
   kill $pids
-  
+
   log "Exiting $0..."
 }
 

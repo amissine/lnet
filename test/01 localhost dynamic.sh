@@ -20,7 +20,7 @@ popd
 #----------------------------------
 : <<'EOF_TEST_PLAN'
 sleep 30
-echo "test hub stop heartbeat"
+echo "hub1 stop heartbeat"
 sleep 50
 EOF_TEST_PLAN
 
