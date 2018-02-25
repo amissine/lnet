@@ -52,7 +52,7 @@ simulateLeaf() {
 
   echo "- pid $$ is simulating $name to hub data stream"
   
-  "$BASH_SOURCE" -b $llp | bin/hub_hb.sh hub $llp
+  "$BASH_SOURCE" -b $llp | bin/hub_hb.sh hub $llp true
 }
 
 heartbeatFromLeaf() {

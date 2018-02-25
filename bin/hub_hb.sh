@@ -30,4 +30,4 @@
 
 PATH="/usr/local/bin:$PATH"
 cd $HOME/project/lnet/bin
-./hub_hb.js "$1" "$2"
+./hub_hb.js $@

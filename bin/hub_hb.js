@@ -24,4 +24,4 @@
 const cloud = require("../conf/cloud.json")
 const Hub   = require("../lib/hub")
 
-new Hub( { heartbeatRateMs: cloud.heartbeatRateMs, hip: process.argv[2], llp: process.argv[3] } )
+new Hub( { heartbeatRateMs: cloud.heartbeatRateMs, hip: process.argv[2], llp: process.argv[3], mock: process.argv[4] } )
