@@ -28,7 +28,7 @@ unset CDPATH  # To prevent unexpected 'cd' behavior.
 
 # --- Begin: STANDARD HELPER FUNCTIONS
 
-declare logfile="/tmp/test01.log"
+declare logfile="/tmp/test00.log"
 
 log() {
   local f='-Ins' timestamp=$([[ `uname` == "Darwin" ]] && gdate $f || date $f)
