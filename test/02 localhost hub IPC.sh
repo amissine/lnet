@@ -78,7 +78,6 @@ done
 sleep 2
 
 # Do some IPC.
-#for hub in hub1 hub2 hub3 hub4 hub5 hub6 hub7 hub8 hub9 hub10; do
 for hub in 'hub1 1025' 'hub2 1026' 'hub3 1027' 'hub4 1028' 'hub6 1029' 'hub6 1030' 'hub7 1031'; do
   "$BASH_SOURCE" -m "$hub" &
 done
