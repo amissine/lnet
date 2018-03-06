@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations under the License.
 #
 # === 02 localhost hub IPC.sh ===
-# Start HubRegistrarServer on the localhost, do some IPC.
+# Start HubRegistryServer on the localhost, do some IPC.
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
@@ -47,10 +47,10 @@ printTestPlan() {
 
 mockHub() {
   local name=$1
-  local -i llp=$((1025 + RANDOM % (65536 - 1025))) # TODO: unique llp values
+  local -i llp=$2
 
   echo "- pid $$ is mocking $name llp=$llp"
-  ./bin/registrar.js $llp
+  ./bin/registry.js $llp
 }
 
 #----------------------------------
@@ -60,12 +60,12 @@ mockHub() {
 #EXIT_CODE=$?
 #[[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 
-while getopts ':u:' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
+while getopts ':m:' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
   [[ $opt == '?' ]] && dieSyntax "Unknown option: -$OPTARG"
   [[ $opt == ':' ]] && dieSyntax "Option -$OPTARG is missing its argument."
   case "$opt" in
-    u) # private option, used by the script itself
-      mockHub "$OPTARG"; exit
+    m) # private option, used by the script itself
+      mockHub $OPTARG $1; exit
       ;;
     *) # An unrecognized switch.
       dieSyntax "Invalid option: $opt"
@@ -73,14 +73,14 @@ while getopts ':u:' opt; do  # $opt will receive the option *letters* one by one
   esac
 done
 
-# Start HubRegistrarServer on the localhost, wait for it to start.
-./bin/registrar.js -1 &
+# Start HubRegistryServer on the localhost, wait for it to start.
+./bin/registry.js -1 &
 sleep 2
 
 # Do some IPC.
 #for hub in hub1 hub2 hub3 hub4 hub5 hub6 hub7 hub8 hub9 hub10; do
-for hub in hub1 hub2; do
-  "$BASH_SOURCE" -u $hub &
+for hub in 'hub1 1025' 'hub2 1026' 'hub3 1027' 'hub4 1028' 'hub6 1029' 'hub6 1030' 'hub7 1031'; do
+  "$BASH_SOURCE" -m "$hub" &
 done
 #----------------------------------
 : <<'EOF_TEST_PLAN'

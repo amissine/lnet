@@ -14,8 +14,8 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-# === registrar.js ===
-# Run HubRegistrarServer on the localhost. Or, if llp > 0, do some IPC for the llp.
+# === registry.js ===
+# Run HubRegistryServer on the localhost. Or, if llp > 0, do some IPC for the llp.
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
