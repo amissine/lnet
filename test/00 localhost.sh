@@ -46,6 +46,9 @@ printTestPlan() {
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
+# Make sure etc/ipc/ registry exists
+mkdir -p etc/ipc 2>/dev/null
+
 # Start HubRegistryServer on the localhost, wait for it to start.
 ./bin/registry.js -1 &
 HRS_PID=$!
