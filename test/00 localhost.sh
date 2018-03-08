@@ -46,14 +46,20 @@ printTestPlan() {
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
+# Start HubRegistryServer on the localhost, wait for it to start.
+./bin/registry.js -1 &
+HRS_PID=$!
+sleep 2
+
 eval "`printTestPlan`" | bin/lnet.js "../test/rc/00 localhost.json"
 EXIT_CODE=$?
+kill $HRS_PID
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 
 #----------------------------------
 : <<'EOF_TEST_PLAN'
-sleep 25
-echo "hub1 stop heartbeat"
-sleep 70
+sleep 5
 EOF_TEST_PLAN
+#echo "hub1 stop heartbeat"
+#sleep 70
 
