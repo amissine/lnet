@@ -1,3 +1,11 @@
 {
-  "heartbeatRateMs": 20000
+  "heartbeatRateMs": 20000,
+  "leaves": [
+    { "name": "leaf0"},
+    { "name": "leaf1", "ip": "admin@176.37.63.2"},
+    { "name": "leaf2", "ip": "admin@192.168.1.52"}
+  ],
+  "hubs": [ 
+    { "name": "hub1", "ip": "ctl@73.244.212.210", "llp": 0, "lp": 22 }
+  ]
 }
