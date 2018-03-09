@@ -46,9 +46,6 @@ printTestPlan() {
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
-# Make sure etc/ipc/ registry exists
-mkdir -p etc/ipc 2>/dev/null
-
 # Start HubRegistryServer on the localhost, wait for it to start.
 ./bin/registry.js -1 &
 HRS_PID=$!
@@ -61,6 +58,8 @@ kill $HRS_PID
 
 #----------------------------------
 : <<'EOF_TEST_PLAN'
+sleep 25
+echo "hub1 git pull origin master"
 sleep 5
 EOF_TEST_PLAN
 #echo "hub1 stop heartbeat"
