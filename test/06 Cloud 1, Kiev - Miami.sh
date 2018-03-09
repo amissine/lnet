@@ -31,7 +31,7 @@ pushd "$HOME/project/lnet"
 # IMPORTANT: the first time, we MUST connect to the hub manually - to add it to known_hosts
 #
 pipe="/tmp/${USER}_mia-hub.in"; rm $pipe 2>/dev/null; mkfifo $pipe
-cat $pipe | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json" >> "/tmp/${USER}_mia-hub.out" 2>&1 &
+cat $pipe | bin/lnet.js "../test/rc/06 Cloud 1, Kiev - Miami.json" >> "/tmp/${USER}_mia-hub.out" 2>&1 &
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 # alec@mba ~ $ echo "hub1 exit" >> /tmp/alec_mia-hub.in
