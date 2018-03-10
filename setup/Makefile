@@ -34,7 +34,7 @@ SHELL := bash
 
 .PHONY: setup
 
-setup: ctlsvc /etc/ssh/ssh_config /etc/ssh/sshd_config groups accounts
+setup: /etc/ssh/ssh_config /etc/ssh/sshd_config groups accounts ctlsvc
 	@rm ctlsvc groups accounts
 
 ctlsvc: ctlsvc_distro/ctlsvc.sh # start the ctlsvc_$(SUDO_USER) service and/or its daemon $<

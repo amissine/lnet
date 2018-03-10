@@ -54,6 +54,7 @@ mkdir -p $REGISTRY 2>/dev/null
 # Start HubRegistryServer on the localhost, wait for it to start.
 ./bin/registry.js -1 &
 HRS_PID=$!
+EXIT_CODE=$?
 
 log "Started HRS_PID=$HRS_PID"
 echo "Started HubRegistryServer HRS_PID=$HRS_PID"

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations under the License.
 #
 # === 03 hub1 git pull.sh ===
-# Remotely execute 'git pull' on hub1.
+# Remotely execute 'git pull' on hub1 and its leaves.
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
@@ -32,7 +32,7 @@ printTestPlan() {
 #----------------------------------
 pushd "$HOME/project/lnet"
 
-eval "`printTestPlan`" | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json" 2>&1
+eval "`printTestPlan`" | bin/lnet.js "../test/rc/06 Cloud 1, Kiev - Miami.json" 2>&1
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 
@@ -41,5 +41,5 @@ popd
 : <<'EOF_TEST_PLAN'
 sleep 3
 echo "hub1 git pull origin master"
-sleep 30
+sleep 3
 EOF_TEST_PLAN

@@ -40,7 +40,8 @@ check() {
 
 git() {
   local line="$1"
-  su - $CTLSVC_ACCOUNT -c "cd ~/project/lnet; $line; sudo su - ctl -c 'echo check >> /tmp/ctlsvc_alec'" >> $logfile 2>/dev/null &
+#  su - $CTLSVC_ACCOUNT -c "cd ~/project/lnet; $line; sudo su - ctl -c 'echo check >> /tmp/ctlsvc_alec'" >> $logfile 2>/dev/null &
+  su - $CTLSVC_ACCOUNT -c "cd ~/project/lnet; $line; sudo su - ctl -c 'echo check >> /tmp/$CTLSVC_NAME'" >> $logfile 2>/dev/null &
 }
 
 readPipe() {
