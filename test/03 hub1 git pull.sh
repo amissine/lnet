@@ -41,5 +41,5 @@ popd
 : <<'EOF_TEST_PLAN'
 sleep 3
 echo "hub1 git pull origin master"
-sleep 3
+sleep 10
 EOF_TEST_PLAN
