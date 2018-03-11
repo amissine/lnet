@@ -1,3 +1,5 @@
+This document is not up to date. For the time being, please refer to [Clouds of Trust](https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/edit#) - this article reflects the current state of the project.
+
 [![npm version](https://img.shields.io/npm/v/ttab.svg)](https://npmjs.com/package/ttab) [![license](https://img.shields.io/npm/l/ttab.svg)](https://github.com/mklement0/ttab/blob/master/LICENSE.md)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
