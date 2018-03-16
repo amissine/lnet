@@ -1,5 +1,5 @@
 {
   "hubs": [ 
-    { "name": "hub1", "ip": "ctl@73.244.212.210", "llp": 0, "lp": 22 }
+    { "name": "hub1", "ip": "ctl@73.244.212.210", "llp": 0, "ctlsvc_name": "ctlsvc_alec", "lp": 22 }
   ]
 }

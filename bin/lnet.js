@@ -25,4 +25,6 @@ const cloud   = require("../conf/cloud.json")
 const Leaf    = require("../lib/leaf")
 const rl_cb   = require("../lib/rl_cb_test")
 
-context.heartbeatRateMs = cloud.heartbeatRateMs; new Leaf( { ctx: context, rl_cb: rl_cb } )
+context.heartbeatRateMs = cloud.heartbeatRateMs
+context.CTLSVC_NAME = process.argv[3]? process.argv[3] : 'ctlsvc_admin' // ctlsvc_name on the leaf
+new Leaf( { ctx: context, rl_cb: rl_cb } )

@@ -1,7 +1,7 @@
 {
   "hubs": [ 
-    { "name": "hub0", "ip": "127.0.0.1", "lp": 22 },
-    { "name": "hub1", "ip": "127.0.0.1", "lp": 22 },
-    { "name": "hub2", "ip": "127.0.0.1", "lp": 22 } 
+    { "name": "hub0", "ip": "127.0.0.1", "ctlsvc_name": "ctlsvc_admin", "lp": 22 },
+    { "name": "hub1", "ip": "127.0.0.1", "ctlsvc_name": "ctlsvc_admin", "lp": 22 },
+    { "name": "hub2", "ip": "127.0.0.1", "ctlsvc_name": "ctlsvc_admin", "lp": 22 } 
   ]
 }
