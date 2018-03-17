@@ -57,7 +57,7 @@ check_git:
 	@if [ `uname` = 'Linux' ]; then apt autoremove; fi
 	@echo $@ > $@
 
-lnet:
+lnet: # TODO: Fix this goal recipe. In the meantime, run it manually
 	@exe='git clone https://github.com/amissine/lnet.git'; \
 		[ -d project/lnet ] || { mkdir project 2>/dev/null; cd project; \
 		"$$exe"; cd ../; chown -R $(SUDO_USER) project; }
