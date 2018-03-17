@@ -90,10 +90,6 @@ readPipe() {
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
-#eval "`printTestPlan`" | bin/run.js "../test/rc/06 Cloud 1, Kiev - Miami.json" 2>&1
-#EXIT_CODE=$?
-#[[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
-
 while getopts ':b:l:' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
   [[ $opt == '?' ]] && dieSyntax "Unknown option: -$OPTARG"
   [[ $opt == ':' ]] && dieSyntax "Option -$OPTARG is missing its argument."

@@ -14,8 +14,8 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #
-# === 05 Two hubs, Kiev leaf.sh ===
-# Test the bridge functionality on the leaves
+# === 05 Two hubs.sh ===
+# Test the bridge functionality on the leaves, each leaf connected to 2 hubs
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
@@ -44,11 +44,27 @@ printTestPlan() {
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
-pipe="/tmp/${USER}_kiev-leaf.in"; rm $pipe 2>/dev/null; mkfifo $pipe
-cat $pipe | bin/lnet.js "../test/rc/05 Two hubs, Kiev leaf.json" >> "/tmp/${USER}_kiev-leaf.out" 2>&1 &
+while getopts ':km' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
+  [[ $opt == '?' ]] && dieSyntax "Unknown option: -$OPTARG"
+  [[ $opt == ':' ]] && dieSyntax "Option -$OPTARG is missing its argument."
+  case "$opt" in
+    k) # kiev leaf
+      config="../test/rc/05 Two hubs, Kiev leaf.json"
+      ;;
+    m) # mia leaf
+      config="../test/rc/05 Two hubs, mia leaf.json"
+      ;;
+    *) # An unrecognized switch.
+      dieSyntax "Invalid option: $opt"
+      ;;
+  esac
+done
+
+pipe="/tmp/${USER}_2hubs.in"; rm $pipe 2>/dev/null; mkfifo $pipe
+cat $pipe | bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
-# admin@kiev-leaf2 ~ $ echo "hub0 exit" >> /tmp/admin_kiev-leaf.in
-# admin@kiev-leaf2 ~ $ echo "hub1 exit" >> /tmp/admin_kiev-leaf.in
+# admin@kiev-leaf2 ~ $ echo "hub0 exit" >> /tmp/admin_2hubs.in
+# admin@kiev-leaf2 ~ $ echo "hub1 exit" >> /tmp/admin_2hubs.in
 
 #----------------------------------
