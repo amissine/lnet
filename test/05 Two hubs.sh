@@ -59,8 +59,9 @@ while getopts ':km' opt; do  # $opt will receive the option *letters* one by one
       ;;
   esac
 done
+[ -z "$config" ] && dieSyntax "Please specify either -k or -m option."
 
-pipe="/tmp/${USER}_2hubs.in"; rm $pipe 2>/dev/null; mkfifo $pipe
+pipe="/tmp/${USER}_2hubs.in"; rm $pipe 2>/dev/null; mkfifo $pipe; rm "/tmp/${USER}_2hubs.out"
 cat $pipe | bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
