@@ -1,6 +1,6 @@
 {
   "hubs": [ 
-    { "name": "hub0", "ip": "ctl@176.37.63.2", "ctlsvc_name": "ctlsvc_admin", "lp": 22 },
-    { "name": "hub1", "ip": "ctl@10.0.0.10", "ctlsvc_name": "ctlsvc_alec", "lp": 22 } 
+    { "name": "hub0", "ip": "ctl@192.168.1.50", "ctlsvc_name": "ctlsvc_admin", "lp": 22 },
+    { "name": "hub1", "ip": "ctl@73.244.212.210", "ctlsvc_name": "ctlsvc_alec", "lp": 22 } 
   ]
 }
