@@ -1,0 +1,4 @@
+{
+  "desc": "This is a configuration file to run the test on all the hubs and leaves that can possibly participate",
+  "hubs": { "hub0": "176.37.63.2", "hub1": "10.0.0.10" }
+}
