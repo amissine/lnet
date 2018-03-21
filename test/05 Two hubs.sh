@@ -22,6 +22,8 @@
 #   https://www.gnu.org/software/bash/manual/bashref.html
 #   https://tiswww.case.edu/php/chet/bash/bashref.html
 
+kTHIS_NAME=${BASH_SOURCE##*/} # whatever is left after the last '/' in the script name
+
 unset CDPATH  # To prevent unexpected `cd` behavior.
 
 # --- Begin: STANDARD HELPER FUNCTIONS
@@ -33,7 +35,7 @@ log() {
   echo "$timestamp $1" >> $logfile
 }
 
-die() { echo "$kTHIS_NAME: ERROR: ${1:-"ABORTING due to unexpected error."}" 1>&2; exit ${2:-1}; }
+die() { echo "$kTHIS_NAME: ${1:-"ABORTING due to unexpected error."}" 1>&2; exit ${2:-1}; }
 dieSyntax() { echo "$kTHIS_NAME: ARGUMENT ERROR: ${1:-"Invalid argument(s) specified."} Use -h for help." 1>&2; exit 2; }
 
 # Print the embedded help info to stdout.
@@ -43,16 +45,31 @@ printUsage() {
 
 # --- Begin: TEST FUNCTIONS
 
-runAll() {
+runAll() { # run from mia macOS 
+: <<'EOF_NODE'
   local conf="$HOME/project/lnet/$1"
   echo "runAll: using configuration file $conf"
-  local output=$(node <<EOF_JS
-const conf = require("$conf")
-const util = require("util")
-console.log(util.inspect(conf))
+  local output=$(node <<-EOF_JS
+    const conf = require("$conf")
+    console.log('hub0="' + conf.hubs.hub0 + '"')
 EOF_JS
 )
-  echo "$output"
+  eval "$output"; echo "$hub0" 
+  ttab -w -t "kiev-hub" "ssh ctl@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -A\""
+  ttab -w -t "mia-hub" "ssh ctl@10.0.0.10 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -B\""
+  ttab -w -t "kiev-leaf0" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -l\""
+  ttab -w -t "kiev-leaf1" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -C\""
+  ttab -w -t "kiev-leaf2" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -D\""
+  ttab -w -t "mia-leaf1" "ssh 10.0.0.6 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -m\""
+  ttab -w -t "mia-leaf2" "ssh 10.0.0.18 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -m\""
+  ttab -w -t "mia-leaf3" "\"cd ~/project/lnet; test/05\ Two\ hubs.sh -m\""
+EOF_NODE
+  local miaHubCmd="ssh -R 1111:localhost:22 ctl@10.0.0.10"
+  miaHubCmd+=" \"cd ~/project/lnet; test/12\\ Hub\\ Registry\\ Server\\ ctl.sh\" &"
+  miaHubCmd+="; tail -f /tmp/mia-hub.log"
+  echo "miaHubCmd = '$miaHubCmd'"
+#  ttab -w -t "mia-hub" "$miaHubCmd"
+#  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
 }
 
 #----------------------------------
@@ -63,18 +80,18 @@ while getopts ':ahklm' opt; do  # $opt will receive the option *letters* one by 
   [[ $opt == ':' ]] && dieSyntax "Option -$OPTARG is missing its argument."
   case "$opt" in
     a) # run the test on all the boxes
-      runAll "test/rc/05\ Two\ hubs.json"; exit 0
+      runAll "test/rc/05\ Two\ hubs.json"; die "TEST STARTED" 0
       ;;
     h) # print usage
       printUsage; exit 0
       ;;
-    k) # kiev leaf
+    k) # kiev leaf 1 or 2; connects to kiev-hub
       config="../test/rc/05 Two hubs, Kiev leaf.json"
       ;;
-    l) # kiev hub, and the leaf on it connects to both kiev-hub and mia-hub
+    l) # kiev leaf 0; connects to both kiev-hub and mia-hub
       config="../test/rc/05 Two hubs, kiev hub.json"
       ;;
-    m) # mia leaf
+    m) # mia leaf 1, 2, or 3; connects to mia-hub
       config="../test/rc/05 Two hubs, mia leaf.json"
       ;;
     *) # An unrecognized switch.

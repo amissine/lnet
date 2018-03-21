@@ -1,4 +1,24 @@
 {
-  "desc": "This is a configuration file to run the test on all the hubs and leaves that can possibly participate",
-  "hubs": { "hub0": "176.37.63.2", "hub1": "10.0.0.10" }
+  "desc": "This is a configuration file for running the test on all its hubs and leaves",
+  "hubs": { 
+    "hub0": {
+      "kiev": { "ip": "192.168.1.50" },
+      "mia": { "ip": "176.37.63.2" } }, 
+    "hub1": {
+      "kiev": { "ip": "73.244.212.210" },
+      "mia": { "ip": "10.0.0.10" } } },
+  "leaves": { 
+    "leaf0": {
+      "name": "kiev-leaf0", "path": [ "hub0", "localhost" ] },
+    "leaf1": {
+      "name": "kiev-leaf1", "path": [ "hub0", "192.168.1.51" ] },
+    "leaf2": {
+      "name": "kiev-leaf2", "path": [ "hub0", "192.168.1.52" ] },
+    "leaf3": {
+      "name": "mia-leaf1", "path": [ "hub1", "10.0.0.6" ] },
+    "leaf4": {
+      "name": "mia-leaf2", "path": [ "hub1", "10.0.0.18" ] },
+    "leaf5": {
+      "name": "mia-leaf3", "path": [ "hub1", "10.0.0.20" ] }
+  }
 }

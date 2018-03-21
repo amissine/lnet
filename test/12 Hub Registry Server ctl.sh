@@ -33,6 +33,7 @@ declare logfile="/tmp/test12.log"
 log() {
   local f='-Ins' timestamp=$([[ `uname` == "Darwin" ]] && gdate $f || date $f)
   echo "$timestamp $1" >> $logfile
+  echo "$1"
 }
 
 die() { echo "$kTHIS_NAME: ERROR: ${1:-"ABORTING due to unexpected error."}" 1>&2; exit ${2:-1}; }
@@ -46,10 +47,14 @@ printTestPlan() {
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
-declare REGISTRY=$HOME/ipc
+declare REGISTRY=$HOME/ipc HRS_PID=$(ps -ef | grep "node \./bin/registry.js -1" | awk '{ print $2 }' -)
 
 # Make sure registry exists
 mkdir -p $REGISTRY 2>/dev/null
+
+# Make sure HubRegistryServer is stopped and clean the registry
+[ -z "$HRS_PID" ] || { kill $HRS_PID; log "Killed HRS_PID=$HRS_PID"; }
+rm $REGISTRY/*.sock
 
 # Start HubRegistryServer on the localhost, wait for it to start.
 ./bin/registry.js -1 &
@@ -57,7 +62,6 @@ HRS_PID=$!
 EXIT_CODE=$?
 
 log "Started HRS_PID=$HRS_PID"
-echo "Started HubRegistryServer HRS_PID=$HRS_PID"
 
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 #----------------------------------
