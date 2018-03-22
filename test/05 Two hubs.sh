@@ -56,25 +56,29 @@ EOF_JS
 )
   eval "$output"; echo "$hub0" 
   ttab -w -t "kiev-hub" "ssh ctl@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -A\""
-  ttab -w -t "mia-hub" "ssh ctl@10.0.0.10 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -B\""
   ttab -w -t "kiev-leaf0" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -l\""
   ttab -w -t "kiev-leaf1" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -C\""
   ttab -w -t "kiev-leaf2" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -D\""
-  ttab -w -t "mia-leaf1" "ssh 10.0.0.6 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -m\""
-  ttab -w -t "mia-leaf2" "ssh 10.0.0.18 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -m\""
-  ttab -w -t "mia-leaf3" "\"cd ~/project/lnet; test/05\ Two\ hubs.sh -m\""
 EOF_NODE
   local test12="test/12\ Hub\ Registry\ Server\ ctl.sh"
-  local miaHubSshCmd="{ cd ~/project/lnet; $test12; }"
-  local miaHubCmd="ssh -t ctl@10.0.0.10 \"$miaHubSshCmd\"; echo $HOME"
-  ttab -w -t "mia-hub" "$miaHubCmd"
+  local announcement="Hub Registry Server restarted, press Ctrl-C to connect leaves to the hub."
+  local miaHubSshCmd="{ cd ~/project/lnet; $test12; echo $announcement; }"
+#  local miaHubCmd="ec=1; while [ \$ec != 255 ]; do ssh ctl@10.0.0.10 \"$miaHubSshCmd\"; ec=\$?; done"
+#  local miaHubCmd="ssh ctl@10.0.0.10 \"$miaHubSshCmd\"; echo \$?"
+  ttab -w -t "mia-hub" "ssh ctl@10.0.0.10 \"$miaHubSshCmd\"; test/05\ Two\ hubs.sh -M"
+#  ttab -w -t "mia-hub" "$miaHubCmd"
 #  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
 }
 
+connectMiaLeaves() {
+  ttab -w -t "mia-leaf1" ssh 10.0.0.6 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m"
+  ttab -w -t "mia-leaf2" ssh 10.0.0.18 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m"
+  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
+}
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
-while getopts ':ahklm' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
+while getopts ':ahklmM' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
   [[ $opt == '?' ]] && dieSyntax "Unknown option: -$OPTARG"
   [[ $opt == ':' ]] && dieSyntax "Option -$OPTARG is missing its argument."
   case "$opt" in
@@ -92,6 +96,9 @@ while getopts ':ahklm' opt; do  # $opt will receive the option *letters* one by 
       ;;
     m) # mia leaf 1, 2, or 3; connects to mia-hub
       config="../test/rc/05 Two hubs, mia leaf.json"
+      ;;
+    M) # private switch, used to connect mia leaves to mia-hub
+      connectMiaLeaves; die "Connecting mia leaves to mia-hub" 0
       ;;
     *) # An unrecognized switch.
       dieSyntax "Invalid option: $opt"

@@ -49,14 +49,14 @@ printTestPlan() {
 
 declare REGISTRY=$HOME/ipc HRS_PID=$(ps -ef | grep "node \./bin/registry.js -1" | awk '{ print $2 }' -)
 
-# Make sure registry exists
+# Make sure the registry exists
 mkdir -p $REGISTRY 2>/dev/null
 
-# Make sure HubRegistryServer is stopped and clean the registry
+# Make sure HubRegistryServer is stopped and the registry is clean
 [ -z "$HRS_PID" ] || { kill $HRS_PID; log "Killed HRS_PID=$HRS_PID"; }
-rm $REGISTRY/*.sock; log "Removed all $REGISTRY/*.sock files"
+rm $REGISTRY/*.sock 2>/dev/null && log "Removed all $REGISTRY/*.sock files"
 
-# Start HubRegistryServer on the localhost, wait for it to start.
+# Start HubRegistryServer on the localhost.
 ./bin/registry.js -1 &
 HRS_PID=$!
 EXIT_CODE=$?
