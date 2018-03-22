@@ -70,9 +70,9 @@ EOF_NODE
 #  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
 }
 
-connectMiaLeaves() {
-  ttab -w -t "mia-leaf1" ssh 10.0.0.6 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m"
-  ttab -w -t "mia-leaf2" ssh 10.0.0.18 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m"
+connectMiaLeaves() { # mia-hub is ready, connect mia leaves 1, 2, and 3 to it
+  ttab -w -t "mia-leaf1" ssh 10.0.0.6 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
+  ttab -w -t "mia-leaf2" ssh 10.0.0.18 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
   ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
 }
 #----------------------------------
