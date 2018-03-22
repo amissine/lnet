@@ -54,7 +54,7 @@ mkdir -p $REGISTRY 2>/dev/null
 
 # Make sure HubRegistryServer is stopped and clean the registry
 [ -z "$HRS_PID" ] || { kill $HRS_PID; log "Killed HRS_PID=$HRS_PID"; }
-rm $REGISTRY/*.sock
+rm $REGISTRY/*.sock; log "Removed all $REGISTRY/*.sock files"
 
 # Start HubRegistryServer on the localhost, wait for it to start.
 ./bin/registry.js -1 &

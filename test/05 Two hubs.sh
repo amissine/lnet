@@ -64,11 +64,10 @@ EOF_JS
   ttab -w -t "mia-leaf2" "ssh 10.0.0.18 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -m\""
   ttab -w -t "mia-leaf3" "\"cd ~/project/lnet; test/05\ Two\ hubs.sh -m\""
 EOF_NODE
-  local miaHubCmd="ssh -R 1111:localhost:22 ctl@10.0.0.10"
-  miaHubCmd+=" \"cd ~/project/lnet; test/12\\ Hub\\ Registry\\ Server\\ ctl.sh\" &"
-  miaHubCmd+="; tail -f /tmp/mia-hub.log"
-  echo "miaHubCmd = '$miaHubCmd'"
-#  ttab -w -t "mia-hub" "$miaHubCmd"
+  local test12="test/12\ Hub\ Registry\ Server\ ctl.sh"
+  local miaHubSshCmd="{ cd ~/project/lnet; $test12; }"
+  local miaHubCmd="ssh -t ctl@10.0.0.10 \"$miaHubSshCmd\"; echo $HOME"
+  ttab -w -t "mia-hub" "$miaHubCmd"
 #  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
 }
 
