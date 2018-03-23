@@ -28,7 +28,7 @@ unset CDPATH  # To prevent unexpected `cd` behavior.
 
 # --- Begin: STANDARD HELPER FUNCTIONS
 
-declare logfile="/tmp/test05.log"
+declare logfile="/tmp/test05.log" EXIT_CODE
 
 log() {
   local f='-Ins' timestamp=$([[ `uname` == "Darwin" ]] && gdate $f || date $f)
@@ -56,34 +56,75 @@ EOF_JS
 )
   eval "$output"; echo "$hub0" 
   ttab -w -t "kiev-hub" "ssh ctl@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -A\""
-  ttab -w -t "kiev-leaf0" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -l\""
   ttab -w -t "kiev-leaf1" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -C\""
   ttab -w -t "kiev-leaf2" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -D\""
 EOF_NODE
+  [ -f ./hkac.t05 ] || { cat <<EOF_HKAC
+
+  Please run the host key authentication check as follows:
+
+    "$kTHIS_NAME" -c
+
+  Having run it successfully, you are good to go with '"$kTHIS_NAME" -a'.
+
+EOF_HKAC
+    EXIT_CODE=1
+    return $EXIT_CODE
+  }
   local test12="test/12\ Hub\ Registry\ Server\ ctl.sh"
   local announcement="Hub Registry Server restarted, press Ctrl-C to connect leaves to the hub."
   local miaHubSshCmd="{ cd ~/project/lnet; $test12; echo $announcement; }"
-#  local miaHubCmd="ec=1; while [ \$ec != 255 ]; do ssh ctl@10.0.0.10 \"$miaHubSshCmd\"; ec=\$?; done"
-#  local miaHubCmd="ssh ctl@10.0.0.10 \"$miaHubSshCmd\"; echo \$?"
   ttab -w -t "mia-hub" "ssh ctl@10.0.0.10 \"$miaHubSshCmd\"; test/05\ Two\ hubs.sh -M"
-#  ttab -w -t "mia-hub" "$miaHubCmd"
-#  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
 }
 
-connectMiaLeaves() { # mia-hub is ready, connect mia leaves 1, 2, and 3 to it
+connectMiaLeaves() { # mia-hub is ready, connect kiev-leaf0 and mia leaves 1, 2, and 3 to it
+  ttab -w -t "kiev-leaf0" ssh admin@176.37.63.2 "cd ~/project/lnet; test/05\ Two\ hubs.sh -l; tail -f /tmp/admin_2hubs.out"
   ttab -w -t "mia-leaf1" ssh 10.0.0.6 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
   ttab -w -t "mia-leaf2" ssh 10.0.0.18 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
   ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
 }
+
+runHkac() { # run from mia macOS
+  for hub in "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -A\"" \
+             "ssh 10.0.0.10 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -B\""; do
+    echo "Running '$hub'..."; eval "$hub"; EXIT_CODE=$?; [ $EXIT_CODE != 0 ] && break
+  done
+  return $EXIT_CODE
+}
+
+kievHubHkac() {
+  for leaf in "ssh ctl@localhost" "ssh 192.168.1.51 ssh ctl@192.168.1.50" "ssh 192.168.1.52 ssh ctl@192.168.1.50"; do
+    echo "  Running '$leaf'..."; eval "$leaf"; EXIT_CODE=$?; [ $EXIT_CODE != 0 ] && break
+  done
+  return $EXIT_CODE
+}
+
+miaHubHkac() {
+  for leaf in "ssh admin@176.37.63.2 ssh ctl@73.244.212.210" \
+              "ssh 10.0.0.6 ssh ctl@10.0.0.10" "ssh 10.0.0.18 ssh ctl@10.0.0.10" "ssh 10.0.0.20 ssh ctl@10.0.0.10"; do
+    echo "  Running '$leaf'..."; eval "$leaf"; EXIT_CODE=$?; [ $EXIT_CODE != 0 ] && break
+  done
+  return $EXIT_CODE
+}
+
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
-while getopts ':ahklmM' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
+while getopts ':aABchkKlmM' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
   [[ $opt == '?' ]] && dieSyntax "Unknown option: -$OPTARG"
   [[ $opt == ':' ]] && dieSyntax "Option -$OPTARG is missing its argument."
   case "$opt" in
     a) # run the test on all the boxes
-      runAll "test/rc/05\ Two\ hubs.json"; die "TEST STARTED" 0
+      runAll "test/rc/05\ Two\ hubs.json" && die "TEST STARTED" 0 || die "EXIT_CODE=$EXIT_CODE" $EXIT_CODE
+      ;;
+    A) # private switch, used to check host key authentication of kiev-hub
+      kievHubHkac && die "SUCCESS" 0 || die "EXIT_CODE=$EXIT_CODE" $EXIT_CODE
+      ;;
+    B) # private switch, used to check host key authentication of mia-hub
+      miaHubHkac && die "SUCCESS" 0 || die "EXIT_CODE=$EXIT_CODE" $EXIT_CODE
+      ;;
+    c) # run the host key authentication check on all the boxes
+      runHkac && die "SUCCESS" 0 || die "EXIT_CODE=$EXIT_CODE" $EXIT_CODE
       ;;
     h) # print usage
       printUsage; exit 0
@@ -91,13 +132,16 @@ while getopts ':ahklmM' opt; do  # $opt will receive the option *letters* one by
     k) # kiev leaf 1 or 2; connects to kiev-hub
       config="../test/rc/05 Two hubs, Kiev leaf.json"
       ;;
+    K) # private switch, used to connect leaves to kiev-hub
+      connectKievLeaves; die "Connecting kiev leaves to kiev-hub" 0
+      ;;
     l) # kiev leaf 0; connects to both kiev-hub and mia-hub
       config="../test/rc/05 Two hubs, kiev hub.json"
       ;;
     m) # mia leaf 1, 2, or 3; connects to mia-hub
       config="../test/rc/05 Two hubs, mia leaf.json"
       ;;
-    M) # private switch, used to connect mia leaves to mia-hub
+    M) # private switch, used to connect leaves to mia-hub
       connectMiaLeaves; die "Connecting mia leaves to mia-hub" 0
       ;;
     *) # An unrecognized switch.
