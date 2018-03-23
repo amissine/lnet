@@ -89,19 +89,22 @@ runHkac() { # run from mia macOS
              "ssh 10.0.0.10 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -B\""; do
     echo "Running '$hub'..."; eval "$hub"; EXIT_CODE=$?; [ $EXIT_CODE != 0 ] && break
   done
+  [ $EXIT_CODE = 0 ] && echo SUCCESS >> ./hkac.t05
   return $EXIT_CODE
 }
 
 kievHubHkac() {
-  for leaf in "ssh ctl@localhost" "ssh 192.168.1.51 ssh ctl@192.168.1.50" "ssh 192.168.1.52 ssh ctl@192.168.1.50"; do
+  for leaf in "ssh ctl@localhost echo SUCCESS" \
+    "ssh 192.168.1.51 ssh ctl@192.168.1.50 echo SUCCESS" "ssh 192.168.1.52 ssh ctl@192.168.1.50 echo SUCCESS"; do
     echo "  Running '$leaf'..."; eval "$leaf"; EXIT_CODE=$?; [ $EXIT_CODE != 0 ] && break
   done
   return $EXIT_CODE
 }
 
 miaHubHkac() {
-  for leaf in "ssh admin@176.37.63.2 ssh ctl@73.244.212.210" \
-              "ssh 10.0.0.6 ssh ctl@10.0.0.10" "ssh 10.0.0.18 ssh ctl@10.0.0.10" "ssh 10.0.0.20 ssh ctl@10.0.0.10"; do
+  for leaf in "ssh admin@176.37.63.2 ssh ctl@73.244.212.210 echo SUCCESS" \
+    "ssh 10.0.0.6 ssh ctl@10.0.0.10 echo SUCCESS" "ssh 10.0.0.18 ssh ctl@10.0.0.10 echo SUCCESS" \
+    "ssh 10.0.0.20 ssh ctl@10.0.0.10 echo SUCCESS"; do
     echo "  Running '$leaf'..."; eval "$leaf"; EXIT_CODE=$?; [ $EXIT_CODE != 0 ] && break
   done
   return $EXIT_CODE
@@ -155,8 +158,8 @@ pipe="/tmp/${USER}_2hubs.in"; rm $pipe 2>/dev/null; mkfifo $pipe; rm "/tmp/${USE
 cat $pipe | bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
-# admin@kiev-leaf2 ~ $ echo "hub0 exit" >> /tmp/admin_2hubs.in
-# admin@kiev-leaf2 ~ $ echo "hub1 exit" >> /tmp/admin_2hubs.in
+# admin@kiev-hub ~ $ echo "hub0 exit" >> /tmp/admin_2hubs.in
+# admin@kiev-nub ~ $ echo "hub1 exit" >> /tmp/admin_2hubs.in
 
 #----------------------------------
 : <<'EOF_HELP'
@@ -164,6 +167,7 @@ EXIT_CODE=$?
   The configuration options are:
 
     -a  try and run the test on all the boxes that have been configured for the test
+    -c  run the host key authentication check on all the boxes
     -h  print this message to stdout
     -k  start the test on localhost as kiev-leaf
     -l  start the test on the kiev-hub localhost as kiev-leaf and mia-leaf
