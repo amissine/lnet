@@ -94,8 +94,9 @@ runHkac() { # run from mia macOS
 }
 
 kievHubHkac() {
+#    "ssh 192.168.1.51 ssh ctl@192.168.1.50 echo SUCCESS" \
   for leaf in "ssh ctl@localhost echo SUCCESS" \
-    "ssh 192.168.1.51 ssh ctl@192.168.1.50 echo SUCCESS" "ssh 192.168.1.52 ssh ctl@192.168.1.50 echo SUCCESS"; do
+    "ssh 192.168.1.52 ssh ctl@192.168.1.50 echo SUCCESS"; do
     echo "  Running '$leaf'..."; eval "$leaf"; EXIT_CODE=$?; [ $EXIT_CODE != 0 ] && break
   done
   return $EXIT_CODE
