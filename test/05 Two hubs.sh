@@ -63,24 +63,29 @@ EOF_NODE
 
   Please run the host key authentication check as follows:
 
-    "$kTHIS_NAME" -c
+    "$0" -c
 
-  Having run it successfully, you are good to go with '"$kTHIS_NAME" -a'.
+  Having run it successfully, you are good to go with '"$0" -a'.
 
 EOF_HKAC
     EXIT_CODE=1
     return $EXIT_CODE
   }
-  local test12="test/12\ Hub\ Registry\ Server\ ctl.sh"
-  local announcement="Hub Registry Server restarted, press Ctrl-C to connect leaves to the hub."
-  local miaHubSshCmd="{ cd ~/project/lnet; $test12; echo $announcement; }"
-  ttab -w -t "mia-hub" "ssh ctl@10.0.0.10 \"$miaHubSshCmd\"; test/05\ Two\ hubs.sh -M"
-}
+  local announcement="Hub Registry Server restarted, press Ctrl-C to continue."
+  local command="\"{ cd ~/project/lnet; test/12\ Hub\ Registry\ Server\ ctl.sh; echo $announcement; }\""
+  for hub in "ssh ctl@176.37.63.2 $command" "ssh ctl@10.0.0.10 $command"; do
+    echo "Running '$hub'..."; eval "$hub"; EXIT_CODE=$?; [ $EXIT_CODE != 255 ] && break
+  done
+  [ $EXIT_CODE = 255 ] && EXIT_CODE=0 || return $EXIT_CODE
 
-connectMiaLeaves() { # mia-hub is ready, connect kiev-leaf0 and mia leaves 1, 2, and 3 to it
-  ttab -w -t "kiev-leaf0" ssh admin@176.37.63.2 "cd ~/project/lnet; test/05\ Two\ hubs.sh -l; tail -f /tmp/admin_2hubs.out"
-  ttab -w -t "mia-leaf1" ssh 10.0.0.6 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
-  ttab -w -t "mia-leaf2" ssh 10.0.0.18 "cd ~/project/lnet; test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
+  echo "Starting the leaves..." # starting the leaves
+  local cmdPrefix="{ cd ~/project/lnet; test/05\ Two\ hubs.sh" cmdSuffix="tail -f /tmp/admin_2hubs.out; }"
+  ttab -w -t "kiev-leaf2" ssh admin@176.37.63.2 ssh 192.168.1.52 "\"${cmdPrefix} -k; ${cmdSuffix}\""
+  ttab -w -t "kiev-leaf1" ssh admin@176.37.63.2 ssh 192.168.1.51 "\"${cmdPrefix} -k; ${cmdSuffix}\""
+  ttab -w -t "kiev-leaf0" ssh admin@176.37.63.2 "${cmdPrefix} -l; ${cmdSuffix}"
+  cmdSuffix="tail -f /tmp/alec_2hubs.out; }"
+  ttab -w -t "mia-leaf1" ssh 10.0.0.6 "${cmdPrefix} -m; ${cmdSuffix}"
+  ttab -w -t "mia-leaf2" ssh 10.0.0.18 "${cmdPrefix} -m; ${cmdSuffix}"
   ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
 }
 
@@ -114,7 +119,7 @@ miaHubHkac() {
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
-while getopts ':aABchkKlmM' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
+while getopts ':aABchklm' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
   [[ $opt == '?' ]] && dieSyntax "Unknown option: -$OPTARG"
   [[ $opt == ':' ]] && dieSyntax "Option -$OPTARG is missing its argument."
   case "$opt" in
@@ -136,17 +141,11 @@ while getopts ':aABchkKlmM' opt; do  # $opt will receive the option *letters* on
     k) # kiev leaf 1 or 2; connects to kiev-hub
       config="../test/rc/05 Two hubs, Kiev leaf.json"
       ;;
-    K) # private switch, used to connect leaves to kiev-hub
-      connectKievLeaves; die "Connecting kiev leaves to kiev-hub" 0
-      ;;
     l) # kiev leaf 0; connects to both kiev-hub and mia-hub
       config="../test/rc/05 Two hubs, kiev hub.json"
       ;;
     m) # mia leaf 1, 2, or 3; connects to mia-hub
       config="../test/rc/05 Two hubs, mia leaf.json"
-      ;;
-    M) # private switch, used to connect leaves to mia-hub
-      connectMiaLeaves; die "Connecting mia leaves to mia-hub" 0
       ;;
     *) # An unrecognized switch.
       dieSyntax "Invalid option: $opt"
