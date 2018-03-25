@@ -46,19 +46,6 @@ printUsage() {
 # --- Begin: TEST FUNCTIONS
 
 runAll() { # run from mia macOS 
-: <<'EOF_NODE'
-  local conf="$HOME/project/lnet/$1"
-  echo "runAll: using configuration file $conf"
-  local output=$(node <<-EOF_JS
-    const conf = require("$conf")
-    console.log('hub0="' + conf.hubs.hub0 + '"')
-EOF_JS
-)
-  eval "$output"; echo "$hub0" 
-  ttab -w -t "kiev-hub" "ssh ctl@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -A\""
-  ttab -w -t "kiev-leaf1" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -C\""
-  ttab -w -t "kiev-leaf2" "ssh admin@176.37.63.2 \"cd ~/project/lnet; test/05\ Two\ hubs.sh -D\""
-EOF_NODE
   [ -f ./hkac.t05 ] || { cat <<EOF_HKAC
 
   Please run the host key authentication check as follows:
