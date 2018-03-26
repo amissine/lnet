@@ -157,7 +157,7 @@ EXIT_CODE=$?
     -c  run the host key authentication check on all the boxes
     -h  print this message to stdout
     -k  start the test on localhost as kiev-leaf
-    -l  start the test on the kiev-hub localhost as kiev-leaf and mia-leaf
+    -l  start the test on the kiev-hub localhost, connect to both kiev-leaf and mia-leaf
     -m  start the test on localhost as mia-leaf
 
   See also: https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o
