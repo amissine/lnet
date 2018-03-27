@@ -71,6 +71,7 @@ EOF_HKAC
   ttab -w -t "kiev-leaf1" ssh admin@176.37.63.2 ssh 192.168.1.51 "\"${cmdPrefix} -k; ${cmdSuffix}\""
   ttab -w -t "kiev-leaf0" ssh admin@176.37.63.2 "${cmdPrefix} -l; ${cmdSuffix}"
   cmdSuffix="tail -f /tmp/alec_2hubs.out; }"
+  ttab -w -t "mia-leaf0" ssh 10.0.0.10 "${cmdPrefix} -n; ${cmdSuffix}"
   ttab -w -t "mia-leaf1" ssh 10.0.0.6 "${cmdPrefix} -m; ${cmdSuffix}"
   ttab -w -t "mia-leaf2" ssh 10.0.0.18 "${cmdPrefix} -m; ${cmdSuffix}"
   ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
@@ -106,7 +107,7 @@ miaHubHkac() {
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
-while getopts ':aABchklm' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
+while getopts ':aABchklmn' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
   [[ $opt == '?' ]] && dieSyntax "Unknown option: -$OPTARG"
   [[ $opt == ':' ]] && dieSyntax "Option -$OPTARG is missing its argument."
   case "$opt" in
@@ -134,6 +135,9 @@ while getopts ':aABchklm' opt; do  # $opt will receive the option *letters* one 
     m) # mia leaf 1, 2, or 3; connects to mia-hub
       config="../test/rc/05 Two hubs, mia leaf.json"
       ;;
+    n) # mia leaf 0; connects to mia-hub only
+      config="../test/rc/05 Two hubs, mia hub.json"
+      ;;
     *) # An unrecognized switch.
       dieSyntax "Invalid option: $opt"
       ;;
@@ -157,8 +161,9 @@ EXIT_CODE=$?
     -c  run the host key authentication check on all the boxes
     -h  print this message to stdout
     -k  start the test on localhost as kiev-leaf
-    -l  start the test on the kiev-hub localhost, connect to both kiev-leaf and mia-leaf
+    -l  start the test on the kiev-hub localhost, connect to both kiev-hub and mia-hub
     -m  start the test on localhost as mia-leaf
+    -n  start the test on the mia-hub localhost, connect to mia-hub only
 
   See also: https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o
 
