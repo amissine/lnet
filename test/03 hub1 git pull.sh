@@ -40,6 +40,6 @@ popd
 #----------------------------------
 : <<'EOF_TEST_PLAN'
 sleep 3
-echo "hub1 git pull origin master"
+echo "hub1 share { "kind": "publish", "topic": "ctl", "message": "git pull origin master" }
 sleep 10
 EOF_TEST_PLAN
