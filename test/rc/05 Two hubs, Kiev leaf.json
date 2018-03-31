@@ -1,5 +1,6 @@
 {
+  "ctlsvc_name": "ctlsvc_admin", 
   "hubs": [ 
-    { "name": "hub0", "ip": "ctl@192.168.1.50", "ctlsvc_name": "ctlsvc_admin", "lp": 22 }
+    { "name": "hub0", "ip": "ctl@192.168.1.50", "lp": 22 }
   ]
 }
