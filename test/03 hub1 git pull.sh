@@ -41,5 +41,5 @@ popd
 : <<'EOF_TEST_PLAN'
 sleep 3
 echo 'hub1 { "kind": "publish", "topic": "ctl", "message": "git pull origin master" }'
-sleep 10
+sleep 5 
 EOF_TEST_PLAN
