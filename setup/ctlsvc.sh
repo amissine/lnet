@@ -39,8 +39,8 @@ check() {
 }
 
 git() {
-  local line="$1"
-  su - $CTLSVC_ACCOUNT -c "cd ~/project/lnet; $line; sudo su - ctl -c 'echo check >> /tmp/$CTLSVC_NAME'" >> $logfile 2>/dev/null &
+  local line="$1" io="/tmp/${CTLSVC_ACCOUNT}_2hubs"
+  su - $CTLSVC_ACCOUNT -c "cd ~/project/lnet; $line; sudo su - ctl -c 'echo check >> /tmp/$CTLSVC_NAME'; echo exit >> $io.in; sleep 1; eval $(tail -n 1 $io.out)" >> $logfile 2>/dev/null &
 }
 
 readPipe() {
