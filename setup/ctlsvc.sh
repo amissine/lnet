@@ -27,20 +27,23 @@ unset CDPATH  # To prevent unexpected 'cd' behavior.
 CTLSVC_ACCOUNT=@CTLSVC_ACCOUNT@
 CTLSVC_NAME="ctlsvc_$CTLSVC_ACCOUNT"
 
-declare logfile="/tmp/$CTLSVC_NAME.log"
+declare logfile="/tmp/$CTLSVC_NAME.log" io="/tmp/${CTLSVC_ACCOUNT}_2hubs"
 
 log() {
   local f='-Ins' timestamp=$([[ `uname` == "Darwin" ]] && gdate $f || date $f)
   echo "$timestamp $1" >> $logfile
 }
 
+run() {
+  su - $CTLSVC_ACCOUNT -c "cd ~/project/lnet; tail -n 1 $io.out; eval $(tail -n 1 $io.out)" >> $logfile 2>&1 &
+}
+
 check() {
-  su - $CTLSVC_ACCOUNT -c "sudo -E make -f project/lnet/setup/Makefile" >> $logfile 2>/dev/null &
+  su - $CTLSVC_ACCOUNT -c "sudo -E make -f project/lnet/setup/Makefile; sudo su - ctl -c 'echo run >> /tmp/$CTLSVC_NAME'" >> $logfile 2>&1 &
 }
 
 git() {
-  local line="$1" io="/tmp/${CTLSVC_ACCOUNT}_2hubs"
-  su - $CTLSVC_ACCOUNT -c "cd ~/project/lnet; $line; sudo su - ctl -c 'echo check >> /tmp/$CTLSVC_NAME'; echo exit >> $io.in; sleep 1; eval $(tail -n 1 $io.out)" >> $logfile 2>/dev/null &
+  su - $CTLSVC_ACCOUNT -c "echo exit >> $io.in; cd ~/project/lnet; $1; sudo su - ctl -c 'echo check >> /tmp/$CTLSVC_NAME'" >> $logfile 2>&1 &
 }
 
 readPipe() {
@@ -55,6 +58,7 @@ readPipe() {
       log "$line"
       [[ ${line:0:3} == 'git' ]] && { git "$line"; continue; }
       [[ ${line:0:5} == 'check' ]] && { check; continue; }
+      [[ ${line:0:3} == 'run' ]] && { run; continue; }
       [[ ${line:0:4} == 'exit' ]] && break
     else break; fi
   done
