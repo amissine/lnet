@@ -90,4 +90,8 @@ accounts:
 	  [ -s pub_key.mk ] || ln -s $(HOME)/project/lnet/setup/pub_key.mk pub_key.mk; make pub_key"; \
 	 done; su - $(SUDO_USER) -c "make -f project/lnet/setup/pub_key.mk pub_key"
 	@echo $@ > $@
-	
+
+.PHONY: run
+
+run: setup
+	@su - $(SUDO_USER) -c "eval `tail -n 1 /tmp/$(SUDO_USER)$(IO_SUFFIX).out`"

@@ -40,6 +40,6 @@ popd
 #----------------------------------
 : <<'EOF_TEST_PLAN'
 sleep 3
-echo 'hub1 { "kind": "publish", "topic": "ctl", "message": "git pull origin master" }'
+echo 'hub1 { "kind": "publish", "topic": "ctl", "message": "git pull origin master; IO_SUFFIX=_2hubs" }'
 sleep 5 
 EOF_TEST_PLAN

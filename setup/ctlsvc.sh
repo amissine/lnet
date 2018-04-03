@@ -27,23 +27,26 @@ unset CDPATH  # To prevent unexpected 'cd' behavior.
 CTLSVC_ACCOUNT=@CTLSVC_ACCOUNT@
 CTLSVC_NAME="ctlsvc_$CTLSVC_ACCOUNT"
 
-declare logfile="/tmp/$CTLSVC_NAME.log" io="/tmp/${CTLSVC_ACCOUNT}_2hubs"
+declare logfile="/tmp/$CTLSVC_NAME.log"
 
 log() {
   local f='-Ins' timestamp=$([[ `uname` == "Darwin" ]] && gdate $f || date $f)
   echo "$timestamp $1" >> $logfile
 }
 
-run() {
-  su - $CTLSVC_ACCOUNT -c "cd ~/project/lnet; tail -n 1 $io.out; eval $(tail -n 1 $io.out)" >> $logfile 2>&1 &
-}
-
 check() {
-  su - $CTLSVC_ACCOUNT -c "sudo -E make -f project/lnet/setup/Makefile; sudo su - ctl -c 'echo run >> /tmp/$CTLSVC_NAME'" >> $logfile 2>&1 &
+  local line="$1"
+  local suffix="${line##* }"
+  su - $CTLSVC_ACCOUNT -c "$suffix sudo -E make -f project/lnet/setup/Makefile run" >> $logfile 2>&1 &
 }
 
 git() {
-  su - $CTLSVC_ACCOUNT -c "echo exit >> $io.in; cd ~/project/lnet; $1; sudo su - ctl -c 'echo check >> /tmp/$CTLSVC_NAME'" >> $logfile 2>&1 &
+  local line="$1"
+  local git_cmd="${line%%; *}"
+  local suffix="${line##*; }"
+  local in="/tmp/$CTLSVC_ACCOUNT${suffix##*=}.in"
+  local echo_check="sudo su - ctl -c 'echo check $suffix >> /tmp/$CTLSVC_NAME'"
+  su - $CTLSVC_ACCOUNT -c "echo exit >> $in; cd ~/project/lnet; $git_cmd; $echo_check" >> $logfile 2>&1 &
 }
 
 readPipe() {
@@ -57,8 +60,7 @@ readPipe() {
     if read line < $pipe; then
       log "$line"
       [[ ${line:0:3} == 'git' ]] && { git "$line"; continue; }
-      [[ ${line:0:5} == 'check' ]] && { check; continue; }
-      [[ ${line:0:3} == 'run' ]] && { run; continue; }
+      [[ ${line:0:5} == 'check' ]] && { check "$line"; continue; }
       [[ ${line:0:4} == 'exit' ]] && break
     else break; fi
   done
