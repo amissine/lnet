@@ -94,4 +94,4 @@ accounts:
 .PHONY: run
 
 run: setup
-	@su - $(SUDO_USER) -c "eval `tail -n 1 /tmp/$(SUDO_USER)$(IO_SUFFIX).out`"
+	@su - $(SUDO_USER) -c "cd ~/project/lnet; eval `tail -n 1 /tmp/$(SUDO_USER)$(IO_SUFFIX).out`"
