@@ -37,6 +37,7 @@ log() {
 check() {
   local line="$1"
   local suffix="${line##* }"
+  log "check: suffix=$suffix"
   su - $CTLSVC_ACCOUNT -c "$suffix sudo -E make -f project/lnet/setup/Makefile run" >> $logfile 2>&1 &
 }
 
@@ -46,6 +47,7 @@ git() {
   local suffix="${line##*; }"
   local in="/tmp/$CTLSVC_ACCOUNT${suffix##*=}.in"
   local echo_check="sudo su - ctl -c 'echo check $suffix >> /tmp/$CTLSVC_NAME'"
+  log "git: in=$in echo_check=$echo_check"
   su - $CTLSVC_ACCOUNT -c "echo exit >> $in; cd ~/project/lnet; $git_cmd; $echo_check" >> $logfile 2>&1 &
 }
 
