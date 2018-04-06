@@ -2,9 +2,10 @@
   "name": "lnet",
   "description": "Localized networking - a *n?x utility for getting SSH access to a box behind a router.",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.3",
   "os": [
-    "darwin", "linux"
+    "darwin",
+    "linux"
   ],
   "preferGlobal": true,
   "bin": {
@@ -49,6 +50,9 @@
     "replace": "^0.3.0",
     "semver": "^5.4.1",
     "tap": "^10.7.2"
+  },
+  "dependencies": {
+    "semver": "^5.4.1"
   },
   "scripts": {
     "test": "tap test/*.js"
