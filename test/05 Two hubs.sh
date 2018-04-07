@@ -15,7 +15,8 @@
 # specific language governing permissions and limitations under the License.
 #
 # === 05 Two hubs.sh ===
-# Test the bridge functionality on the leaves, each leaf connected to 2 hubs
+# Test the bridge functionality on the leaves, with one leaf on kiev-hub
+# connected to both kiev-hub and mia-hub.
 #
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
@@ -88,9 +89,7 @@ runHkac() { # run from mia macOS
 }
 
 kievHubHkac() {
-#    "ssh 192.168.1.51 ssh ctl@192.168.1.50 echo SUCCESS" \
-  for leaf in "ssh ctl@localhost echo SUCCESS" \
-    "ssh 192.168.1.52 ssh ctl@192.168.1.50 echo SUCCESS"; do
+  for leaf in "ssh ctl@localhost echo SUCCESS" "ssh 192.168.1.52 ssh ctl@192.168.1.50 echo SUCCESS"; do
     echo "  Running '$leaf'..."; eval "$leaf"; EXIT_CODE=$?; [ $EXIT_CODE != 0 ] && break
   done
   return $EXIT_CODE
@@ -146,12 +145,10 @@ while getopts ':aABchklmn' opt; do  # $opt will receive the option *letters* one
 done
 [ -z "$config" ] && dieSyntax "Please specify the configuration option."
 
-pipe="/tmp/${USER}_2hubs.in"; rm $pipe 2>/dev/null; mkfifo $pipe; rm "/tmp/${USER}_2hubs.out"
-cat $pipe | gitdesc=`git describe` bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
+pipe="/tmp/${USER}_2hubs.in"; rm $pipe 2>/dev/null; mkfifo $pipe; rm "/tmp/${USER}_2hubs.out" 2>/dev/null
+cat $pipe | gitdesc=`git describe` IO_SUFFIX=_2hubs bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
-# admin@kiev-hub ~ $ echo "hub0 exit" >> /tmp/admin_2hubs.in
-# admin@kiev-nub ~ $ echo "hub1 exit" >> /tmp/admin_2hubs.in
 
 #----------------------------------
 : <<'EOF_HELP'
