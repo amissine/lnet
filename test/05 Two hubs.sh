@@ -70,7 +70,7 @@ EOF_HKAC
   local cmdPrefix="{ cd ~/project/lnet; test/05\ Two\ hubs.sh" cmdSuffix="sleep 2; tail -f /tmp/admin_2hubs.out; }"
   ttab -w -t "kiev-leaf0" ssh admin@176.37.63.2 "${cmdPrefix} -l; ${cmdSuffix}"
   sleep 10
-  ttab -w -t "kiev-leaf1" ssh admin@176.37.63.2 ssh 192.168.1.51 "\"${cmdPrefix} -k; ${cmdSuffix}\""
+  #ttab -w -t "kiev-leaf1" ssh admin@176.37.63.2 ssh 192.168.1.51 "\"${cmdPrefix} -k; ${cmdSuffix}\""
   ttab -w -t "kiev-leaf2" ssh admin@176.37.63.2 ssh 192.168.1.52 "\"${cmdPrefix} -k; ${cmdSuffix}\""
   cmdSuffix="sleep 2; tail -f /tmp/alec_2hubs.out; }"
   ttab -w -t "mia-leaf0" ssh 10.0.0.10 "${cmdPrefix} -n; ${cmdSuffix}"
