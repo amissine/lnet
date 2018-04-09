@@ -1,0 +1,16 @@
+Hi! In this demo I will show you how the software update from this box gets propagated 
+throughout the cloud. It is similar to what Apple does to our iPhones while we are
+asleep, but in our case it is all open source, and there is no central point of origin
+of the update - whichever box has the latest, it shares it with the rest of the cloud.
+
+The cloud is depicted in the bottom-left corner of the screen. It runs on two boxes that
+reside in Kiev, Ukraine, and 4 boxes residing here in Miami. In Miami, we have 4 leaves
+connected to the local hub). In Kiev, we have one leaf connected to the local hub, 
+and another leaf, "kiev-leaf0", connected to both the local hub and to the hub in Miami.
+This leaf serves as a bridge between the two hubs.
+
+When the cloud starts, this leaf starts first. The other leaves follow, and the last
+leaf to start is "mia-leaf3", the one that runs on this box and, incidentally, has the
+latest and the greatest update. As soon as it starts, all other leaves pick up the
+update and restart. The script that runs the demo is in the top-right corner of the
+screen. Let us start it!

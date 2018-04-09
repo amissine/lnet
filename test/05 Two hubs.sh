@@ -76,7 +76,8 @@ EOF_HKAC
   ttab -w -t "mia-leaf0" ssh 10.0.0.10 "${cmdPrefix} -n; ${cmdSuffix}"
   ttab -w -t "mia-leaf1" ssh 10.0.0.6 "${cmdPrefix} -m; ${cmdSuffix}"
   ttab -w -t "mia-leaf2" ssh 10.0.0.18 "${cmdPrefix} -m; ${cmdSuffix}"
-  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; tail -f /tmp/alec_2hubs.out"
+  sleep 15
+  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; sleep 2; tail -f /tmp/alec_2hubs.out"
 }
 
 runHkac() { # run from mia macOS
