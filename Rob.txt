@@ -1,0 +1,9 @@
+Rob, thank you for the great article! It is in the air, this feeling that the foundations of the society of tomorrow are being laid out today, and I am sure you guys are the front-runners. I am trying to be part of it too, on a different scale, of course. Today, I put a demo on YouTube , showing a software update propagated through my private cloud with subsequent restart of the cloud participants. The demo is less than 2 minutes long. Please let me know if you think this work could be of use to you guys. See also:
+Distributed Exchange for ICOs — my take on building a distributed exchange
+Clouds of Trust — my article on distributed application development
+
+Thanks again!
+
+https://www.youtube.com/watch?v=8U19qKLYK0E
+https://www.facebook.com/alecmissine/posts/1175426502591846
+https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/

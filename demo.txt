@@ -5,8 +5,8 @@ of the update - whichever box has the latest, it shares it with the rest of the 
 
 The cloud is depicted in the bottom-left corner of the screen. It runs on two boxes that
 reside in Kiev, Ukraine, and 4 boxes residing here in Miami. In Miami, we have 4 leaves
-connected to the local hub). In Kiev, we have one leaf connected to the local hub, 
-and another leaf, "kiev-leaf0", connected to both the local hub and to the hub in Miami.
+connected to the local hub. In Kiev, we have one leaf connected to the local hub, 
+and another leaf, "kiev-leaf0", connected to both the local hub and the hub in Miami.
 This leaf serves as a bridge between the two hubs.
 
 When the cloud starts, this leaf starts first. The other leaves follow, and the last
