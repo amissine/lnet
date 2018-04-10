@@ -53,7 +53,7 @@ runAll() { # run from mia macOS
 
     "$0" -c
 
-  Having run it successfully, you are good to go with '"$0" -a'.
+  Having run it successfully, you are good to go with '"$0" -a[ -b ali ]'.
 
 EOF_HKAC
     EXIT_CODE=1
@@ -151,7 +151,6 @@ done
 [ -z "$config" ] && dieSyntax "Please specify the configuration option."
 
 pipe="/tmp/${USER}_2hubs.in"; rm $pipe 2>/dev/null; mkfifo $pipe; rm "/tmp/${USER}_2hubs.out" 2>/dev/null
-#cat $pipe | gitdesc=`git describe` IO_SUFFIX=_2hubs branch=$gitbranch bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
 cat $pipe | gitdesc=`git describe` branch=$gitbranch bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"

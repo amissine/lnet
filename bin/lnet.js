@@ -25,5 +25,4 @@ const context = require(process.argv[2])
 const Leaf    = require("../lib/leaf")
 const rl_cb   = require("../lib/rl_cb_test")
 
-//context.heartbeatRateMs = cloud.heartbeatRateMs
 new Leaf( { cloud: cloud, ctx: context, rl_cb: rl_cb } )
