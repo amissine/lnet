@@ -1,5 +1,5 @@
 {
   "IO_SUFFIX": "_2hubs",
-  "remote": "master",
+  "remote": "origin",
   "heartbeatRateMs": 20000
 }
