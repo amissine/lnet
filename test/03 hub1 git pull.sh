@@ -32,7 +32,7 @@ printTestPlan() {
 #----------------------------------
 pushd "$HOME/project/lnet"
 
-eval "`printTestPlan`" | bin/lnet.js "../test/rc/06 Cloud 1, Kiev - Miami.json" 2>&1
+eval "`printTestPlan`" | gitdesc=`git describe` branch=master bin/lnet.js "../test/rc/06 Cloud 1, Kiev - Miami.json" 2>&1
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 
