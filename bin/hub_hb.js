@@ -21,8 +21,8 @@
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
 */
-const cloud = require("../conf/cloud.json")
+const cloud = require(`../conf/cloud-${process.argv[3]}.json`)
 const Hub   = require("../lib/hub")
 
 new Hub( { heartbeatRateMs: cloud.heartbeatRateMs, hip: process.argv[2], 
-  ctlsvc_name: process.argv[3], mock: process.argv[4] } )
+  branch: process.argv[3], mock: process.argv[4] } )

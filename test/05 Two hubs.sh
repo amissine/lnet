@@ -29,7 +29,7 @@ unset CDPATH  # To prevent unexpected `cd` behavior.
 
 # --- Begin: STANDARD HELPER FUNCTIONS
 
-declare logfile="/tmp/test05.log" EXIT_CODE
+declare logfile="/tmp/test05.log" EXIT_CODE gitbranch="master"
 
 log() {
   local f='-Ins' timestamp=$([[ `uname` == "Darwin" ]] && gdate $f || date $f)
@@ -68,16 +68,17 @@ EOF_HKAC
 
   echo "Starting the leaves..." # starting the leaves
   local cmdPrefix="{ cd ~/project/lnet; test/05\ Two\ hubs.sh" cmdSuffix="sleep 2; tail -f /tmp/admin_2hubs.out; }"
-  ttab -w -t "kiev-leaf0" ssh admin@176.37.63.2 "${cmdPrefix} -l; ${cmdSuffix}"
+  local b="b $gitbranch"
+  ttab -w -t "kiev-leaf0" ssh admin@176.37.63.2 "${cmdPrefix} -l${b}; ${cmdSuffix}"
   sleep 10
-  #ttab -w -t "kiev-leaf1" ssh admin@176.37.63.2 ssh 192.168.1.51 "\"${cmdPrefix} -k; ${cmdSuffix}\""
-  ttab -w -t "kiev-leaf2" ssh admin@176.37.63.2 ssh 192.168.1.52 "\"${cmdPrefix} -k; ${cmdSuffix}\""
+  #ttab -w -t "kiev-leaf1" ssh admin@176.37.63.2 ssh 192.168.1.51 "\"${cmdPrefix} -k${b}; ${cmdSuffix}\""
+  ttab -w -t "kiev-leaf2" ssh admin@176.37.63.2 ssh 192.168.1.52 "\"${cmdPrefix} -k${b}; ${cmdSuffix}\""
   cmdSuffix="sleep 2; tail -f /tmp/alec_2hubs.out; }"
-  ttab -w -t "mia-leaf0" ssh 10.0.0.10 "${cmdPrefix} -n; ${cmdSuffix}"
-  ttab -w -t "mia-leaf1" ssh 10.0.0.6 "${cmdPrefix} -m; ${cmdSuffix}"
-  ttab -w -t "mia-leaf2" ssh 10.0.0.18 "${cmdPrefix} -m; ${cmdSuffix}"
+  ttab -w -t "mia-leaf0" ssh 10.0.0.10 "${cmdPrefix} -n${b}; ${cmdSuffix}"
+  ttab -w -t "mia-leaf1" ssh 10.0.0.6 "${cmdPrefix} -m${b}; ${cmdSuffix}"
+  ttab -w -t "mia-leaf2" ssh 10.0.0.18 "${cmdPrefix} -m${b}; ${cmdSuffix}"
   sleep 15
-  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m; sleep 2; tail -f /tmp/alec_2hubs.out"
+  ttab -w -t "mia-leaf3" "test/05\ Two\ hubs.sh -m${b}; sleep 2; tail -f /tmp/alec_2hubs.out"
 }
 
 runHkac() { # run from mia macOS
@@ -108,7 +109,7 @@ miaHubHkac() {
 #----------------------------------
 [ `pwd` != "$HOME/project/lnet" ] && die "Please run this script from $HOME/project/lnet"
 
-while getopts ':aABchklmn' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
+while getopts ':aAb:Bchklmn' opt; do  # $opt will receive the option *letters* one by one; a trailing : means that an arg. is required, reported in $OPTARG.
   [[ $opt == '?' ]] && dieSyntax "Unknown option: -$OPTARG"
   [[ $opt == ':' ]] && dieSyntax "Option -$OPTARG is missing its argument."
   case "$opt" in
@@ -117,6 +118,9 @@ while getopts ':aABchklmn' opt; do  # $opt will receive the option *letters* one
       ;;
     A) # private switch, used to check host key authentication of kiev-hub
       kievHubHkac && die "SUCCESS" 0 || die "EXIT_CODE=$EXIT_CODE" $EXIT_CODE
+      ;;
+    b) # set gitbranch (default branch is "master")
+      gitbranch="$OPTARG"
       ;;
     B) # private switch, used to check host key authentication of mia-hub
       miaHubHkac && die "SUCCESS" 0 || die "EXIT_CODE=$EXIT_CODE" $EXIT_CODE
@@ -147,7 +151,8 @@ done
 [ -z "$config" ] && dieSyntax "Please specify the configuration option."
 
 pipe="/tmp/${USER}_2hubs.in"; rm $pipe 2>/dev/null; mkfifo $pipe; rm "/tmp/${USER}_2hubs.out" 2>/dev/null
-cat $pipe | gitdesc=`git describe` IO_SUFFIX=_2hubs bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
+#cat $pipe | gitdesc=`git describe` IO_SUFFIX=_2hubs branch=$gitbranch bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
+cat $pipe | gitdesc=`git describe` branch=$gitbranch bin/lnet.js "$config" >> "/tmp/${USER}_2hubs.out" 2>&1 &
 EXIT_CODE=$?
 [[ $EXIT_CODE == 0 ]] && echo "TEST PASSED" || echo "TEST FAILED, EXIT_CODE=$EXIT_CODE"
 
@@ -157,6 +162,7 @@ EXIT_CODE=$?
   The configuration options are:
 
     -a  try and run the test on all the boxes that have been configured for the test
+    -b  git branch to use, defaults to master
     -c  run the host key authentication check on all the boxes
     -h  print this message to stdout
     -k  start the test on localhost as kiev-leaf

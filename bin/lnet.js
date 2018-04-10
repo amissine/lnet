@@ -20,10 +20,10 @@
 # See also:
 #   https://docs.google.com/document/d/1JPzTa7IXEQL0NZLoO5leCNj40e7yy1dFNMiqTtBNH2o/
 */
+const cloud   = require(`../conf/cloud-${process.env.branch}.json`)
 const context = require(process.argv[2])
-const cloud   = require("../conf/cloud.json")
 const Leaf    = require("../lib/leaf")
 const rl_cb   = require("../lib/rl_cb_test")
 
-context.heartbeatRateMs = cloud.heartbeatRateMs
-new Leaf( { ctx: context, rl_cb: rl_cb } )
+//context.heartbeatRateMs = cloud.heartbeatRateMs
+new Leaf( { cloud: cloud, ctx: context, rl_cb: rl_cb } )
